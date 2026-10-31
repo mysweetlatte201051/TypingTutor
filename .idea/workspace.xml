@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f4c1645d-c449-4b57-927a-a589465b8232" name="変更" comment="新たなファイルを追加">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SET_USER_NAME_GLOBALLY" value="false" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "mysweetlatte201051"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/mysweetlatte201051/TypingTutor.git",
+    "accountId": "4f196df5-f5b9-489a-986a-a157f25bbad8"
+  }
+}]]></component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0004400157171247" />
+      <entry key="MS500" value="1.6001410216904755" />
+      <entry key="S2" value="5.232332105360216" />
+      <entry key="S5" value="7.609944052440007" />
+      <entry key="S10" value="8.704075864404633" />
+      <entry key="S30" value="9.618945499426623" />
+      <entry key="S60" value="10.316963781368255" />
+      <entry key="M2" value="11.382794271301327" />
+      <entry key="M5" value="13.155038242596971" />
+      <entry key="M10" value="16.25455330171393" />
+      <entry key="M15" value="19.221585343132954" />
+      <entry key="M30" value="24.89670785848509" />
+      <entry key="H1" value="29.515369399244047" />
+      <entry key="H2" value="32.48203718395172" />
+      <entry key="H4" value="34.16595738341671" />
+      <entry key="D1" value="35.683334000638936" />
+      <entry key="W1" value="35.9544850831084" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.9730745444250163" />
+      <entry key="MS500" value="1.5878172644931718" />
+      <entry key="S2" value="5.21678049651976" />
+      <entry key="S5" value="7.6003866451934545" />
+      <entry key="S10" value="8.698532246663406" />
+      <entry key="S30" value="9.61689279299348" />
+      <entry key="S60" value="10.315880206807165" />
+      <entry key="M2" value="11.382214509948495" />
+      <entry key="M5" value="13.154783062202089" />
+      <entry key="M10" value="16.254406324087974" />
+      <entry key="M15" value="19.221475015676866" />
+      <entry key="M30" value="24.89664088255697" />
+      <entry key="H1" value="29.51533110129201" />
+      <entry key="H2" value="32.482016489630674" />
+      <entry key="H4" value="34.1659465975976" />
+      <entry key="D1" value="35.683332137116125" />
+      <entry key="W1" value="35.95448481520879" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3LP33Lc2mAPlGNr4G2aAQv91t76" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python テスト.pytest (test_api.py 内).executor": "Run",
+    "Python テスト.pytest (test_caluculator.py 内).executor": "Run",
+    "Python テスト.pytest (test_evaluator.py 内).executor": "Run",
+    "Python テスト.pytest (text_manager.py 内).executor": "Run",
+    "Python.text_manager.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.jshint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.jshint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "python.packages.toolwindow.project.migrated.to.right.top.v2": "true",
+    "settings.editor.selected.configurable": "project.propVCSSupport.CommitDialog"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/docs" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="pytest (test_caluculator.py 内)" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="TypingTutor" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="false" />
+      <option name="RUN_TOOL" value="" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_caluculator.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python テスト.pytest (test_caluculator.py 内)" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-73a66231627c-5bd6d13a2a75-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-262.10968.92" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="デフォルトタスク">
+      <changelist id="f4c1645d-c449-4b57-927a-a589465b8232" name="変更" comment="" />
+      <created>1793341675707</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1793341675707</updated>
+    </task>
+    <task id="LOCAL-00001" summary="feat: Add Score Calculator logic and pytest test suite&#10;&#10;- Implement calculate_wpm and calculate_accuracy in app/calculator.py&#10;- Add unit tests for Score Calculator in tests/test_calculator.py">
+      <option name="closed" value="true" />
+      <created>1793353653522</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1793353653522</updated>
+    </task>
+    <task id="LOCAL-00002" summary="新たなファイルを追加">
+      <option name="closed" value="true" />
+      <created>1793414710611</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1793414710611</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: Add Score Calculator logic and pytest test suite&#10;&#10;- Implement calculate_wpm and calculate_accuracy in app/calculator.py&#10;- Add unit tests for Score Calculator in tests/test_calculator.py" />
+    <MESSAGE value="ci: Add GitHub Actions workflow for automated pytest run" />
+    <MESSAGE value="新たなファイルを追加" />
+    <option name="LAST_COMMIT_MESSAGE" value="新たなファイルを追加" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>8</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
