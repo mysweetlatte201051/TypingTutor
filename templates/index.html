@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Tutor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Typing Tutor</h1>
+            <p class="subtitle">English Typing Practice App</p>
+        </header>
+
+        <!-- 設定パネル -->
+        <div class="control-panel">
+            <div class="control-group">
+                <label for="levelSelect">Level:</label>
+                <select id="levelSelect">
+                    <option value="1">Level 1 (Home Position)</option>
+                    <option value="2">Level 2 (Words)</option>
+                    <option value="3" selected>Level 3 (Sentences)</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="categorySelect">Category:</label>
+                <select id="categorySelect">
+                    <option value="default">Default</option>
+                    <option value="it_terms">IT Terms</option>
+                    <option value="quotes">Quotes</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="modeSelect">Mode:</label>
+                <select id="modeSelect">
+                    <option value="strict">Strict (Stop on Error)</option>
+                    <option value="free">Free (Flowing)</option>
+                </select>
+            </div>
+            <button id="restartBtn" class="btn">New Text</button>
+        </div>
+
+        <!-- リアルタイムスコア表示 -->
+        <div class="stats-board">
+            <div class="stat-item">
+                <span class="stat-label">WPM</span>
+                <span id="wpmDisplay" class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Accuracy</span>
+                <span id="accuracyDisplay" class="stat-value">100.0%</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Time</span>
+                <span id="timeDisplay" class="stat-value">0s</span>
+            </div>
+        </div>
+
+        <!-- タイピングテキスト表示エリア -->
+        <div class="typing-container" id="typingContainer" tabindex="0">
+            <div id="textDisplay" class="text-display">Loading text...</div>
+        </div>
+
+        <!-- 隠しキー入力フィールド（キーイベント取得用） -->
+        <input type="text" id="hiddenInput" autocomplete="off" autofocus>
+
+        <!-- 終了時モーダル -->
+        <div id="resultModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Lesson Completed!</h2>
+                <div class="result-stats">
+                    <p>WPM: <strong id="finalWpm">0</strong></p>
+                    <p>Accuracy: <strong id="finalAccuracy">0%</strong></p>
+                    <p>Time: <strong id="finalTime">0s</strong></p>
+                </div>
+                <button id="modalRestartBtn" class="btn">Next Lesson</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
