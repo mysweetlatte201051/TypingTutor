@@ -191,3 +191,82 @@ select {
     font-size: 1.2rem;
     margin-bottom: 0.8rem;
 }
+
+/* --- テーマ変数定義 --- */
+:root {
+    --bg-color: #1e1e2e;
+    --card-bg: #313244;
+    --panel-bg: #181825;
+    --text-color: #cdd6f4;
+    --accent-color: #89b4fa;
+    --btn-bg: #89b4fa;
+    --btn-text: #11111b;
+    --correct-color: #a6e3a1;
+    --incorrect-color: #f38ba8;
+    --cursor-color: #f9e2af;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 90年代 System 7 風レトロMacテーマ */
+[data-theme="system7"] {
+    --bg-color: #7f7f7f;
+    --card-bg: #dddddd;
+    --panel-bg: #ffffff;
+    --text-color: #000000;
+    --accent-color: #000000;
+    --btn-bg: #dddddd;
+    --btn-text: #000000;
+    --correct-color: #008800;
+    --incorrect-color: #cc0000;
+    --cursor-color: #000000;
+    --font-family: 'Geneva', 'Chicago', 'Monaco', 'Courier New', monospace;
+}
+
+/* System 7テーマ適用時のカード枠線・立体ウィンドウ装飾 */
+[data-theme="system7"] .container {
+    border: 2px solid #000000;
+    box-shadow: 4px 4px 0px #000000;
+    border-radius: 0;
+}
+
+[data-theme="system7"] header h1 {
+    font-family: 'Chicago', 'Geneva', monospace;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+[data-theme="system7"] .control-panel,
+[data-theme="system7"] .stats-board,
+[data-theme="system7"] .typing-container {
+    border: 2px solid #000000;
+    box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #888888;
+    border-radius: 0;
+    background-color: #ffffff;
+}
+
+[data-theme="system7"] .btn {
+    border: 2px solid #000000;
+    border-radius: 0;
+    box-shadow: 2px 2px 0px #000000;
+    font-family: inherit;
+    text-transform: uppercase;
+}
+
+[data-theme="system7"] .btn:active {
+    box-shadow: none;
+    transform: translate(2px, 2px);
+}
+
+[data-theme="system7"] select {
+    border: 2px solid #000000;
+    border-radius: 0;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+[data-theme="system7"] .char-current {
+    border-bottom: 3px solid #000000;
+    background-color: #bbbbbb;
+    color: #000000;
+}

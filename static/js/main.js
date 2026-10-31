@@ -185,3 +185,22 @@ document.addEventListener("DOMContentLoaded", () => {
     // 初期起動
     loadText();
 });
+
+// テーマ選択要素
+const themeSelect = document.getElementById("themeSelect");
+
+// 初期テーマ読み込み (localStorage に保存されていれば適用)
+const savedTheme = localStorage.getItem("typing_tutor_theme") || "dark";
+document.documentElement.setAttribute("data-theme", savedTheme);
+if (themeSelect) {
+    themeSelect.value = savedTheme;
+}
+
+// テーマ切り替えイベント
+if (themeSelect) {
+    themeSelect.addEventListener("change", (e) => {
+        const selectedTheme = e.target.value;
+        document.documentElement.setAttribute("data-theme", selectedTheme);
+        localStorage.setItem("typing_tutor_theme", selectedTheme);
+    });
+}
