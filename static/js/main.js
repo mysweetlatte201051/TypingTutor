@@ -255,7 +255,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 totalTyped++;
-                if (!result.is_correct) errors++;
+
+                // ★ ここに効果音再生の分岐を追加 ★
+                if (!result.is_correct) {
+                    errors++;
+                    playErrorSound(); // ミス時の警告音
+                } else {
+                    playTypeSound();  // 正しい打鍵音
+                }
 
                 typedHistory[currentIndex] = result.is_correct;
                 currentIndex = result.current_index;
@@ -350,3 +357,84 @@ document.addEventListener("DOMContentLoaded", () => {
     renderHistory();
     loadText();
 });
+
+// --- 効果音（Web Audio API）制御 ---
+    let audioCtx = null;
+    let isSoundEnabled = true;
+
+    // AudioContext の初期化（ユーザー操作をトリガーにして生成）
+    function initAudio() {
+        if (!audioCtx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+        }
+        if (audioCtx.state === "suspended") {
+            audioCtx.resume();
+        }
+    }
+
+    // 正解時のタイピング音（タイプライター / レトロクリック音）
+    function playTypeSound() {
+        if (!isSoundEnabled) return;
+        initAudio();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        // 短いビープ音（アタック感のある短い音）
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.03);
+
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.03);
+    }
+
+    // ミス時の警告音（低音エラーピープ）
+    function playErrorSound() {
+        if (!isSoundEnabled) return;
+        initAudio();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        // 低い鋸歯状波（エラー感のある低いブザー音）
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(120, audioCtx.currentTime + 0.08);
+
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.12);
+    }
+
+    // サウンドON/OFFトグルボタンのイベントハンドラ
+    const soundToggle = document.getElementById("soundToggle");
+    if (soundToggle) {
+        soundToggle.addEventListener("click", () => {
+            isSoundEnabled = !isSoundEnabled;
+            soundToggle.innerText = isSoundEnabled ? "🔊 ON" : "🔇 OFF";
+            focusInput();
+        });
+    }
+
+    // --- キー入力制御のレスポンス処理部分に音再生を追加 ---
+    // (打鍵判定レスポンスの if (response.ok) 内に以下を追加)
+    /*
+        if (result.is_correct) {
+            playTypeSound();
+        } else {
+            playErrorSound();
+        }
+    */
