@@ -4,15 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f4c1645d-c449-4b57-927a-a589465b8232" name="変更" comment="feat: Add Score Calculator logic and pytest test suite&#10;&#10;- Implement calculate_wpm and calculate_accuracy in app/calculator.py&#10;- Add unit tests for Score Calculator in tests/test_calculator.py">
-      <change beforePath="$PROJECT_DIR$/.idea/TypingTutor.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/TypingTutor.iml" afterDir="false" />
+    <list default="true" id="f4c1645d-c449-4b57-927a-a589465b8232" name="変更" comment="feat: Add System 7 retro Mac theme switcher&#10;&#10;- Add CSS variables and data-theme=&quot;system7&quot; retro styles in style.css&#10;- Add theme select dropdown in index.html&#10;- Save selected theme preference in localStorage via main.js">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/evaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/evaluator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/text_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/text_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_evaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_evaluator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +20,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -30,37 +28,37 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="SET_USER_NAME_GLOBALLY" value="false" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "mysweetlatte201051"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;mysweetlatte201051&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/mysweetlatte201051/TypingTutor.git",
-    "accountId": "4f196df5-f5b9-489a-986a-a157f25bbad8"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/mysweetlatte201051/TypingTutor.git&quot;,
+    &quot;accountId&quot;: &quot;4f196df5-f5b9-489a-986a-a157f25bbad8&quot;
   }
-}]]></component>
+}</component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0" />
-      <entry key="S5" value="1.0" />
-      <entry key="S10" value="1.0" />
-      <entry key="S30" value="1.0000000000686784" />
-      <entry key="S60" value="1.0000378317241418" />
-      <entry key="M2" value="1.0281592045250838" />
-      <entry key="M5" value="2.489633879284484" />
-      <entry key="M10" value="6.59284423536394" />
-      <entry key="M15" value="9.692763653256359" />
-      <entry key="M30" value="14.510976196174619" />
-      <entry key="H1" value="17.844283730739534" />
-      <entry key="H2" value="19.807705058392322" />
-      <entry key="H4" value="20.873644696694424" />
-      <entry key="D1" value="21.8079356028145" />
-      <entry key="W1" value="21.97245406397575" />
+      <entry key="MS100" value="1.3522912582234887" />
+      <entry key="MS500" value="2.359428900343419" />
+      <entry key="S2" value="4.167484689276314" />
+      <entry key="S5" value="7.1734341086933755" />
+      <entry key="S10" value="9.41916316390326" />
+      <entry key="S30" value="11.61279470124838" />
+      <entry key="S60" value="12.279423337920965" />
+      <entry key="M2" value="12.73390627843875" />
+      <entry key="M5" value="15.018059818338822" />
+      <entry key="M10" value="20.70670418363524" />
+      <entry key="M15" value="26.29849561371975" />
+      <entry key="M30" value="38.53455030060228" />
+      <entry key="H1" value="50.3521682138067" />
+      <entry key="H2" value="58.88969955304938" />
+      <entry key="H4" value="64.07323048090925" />
+      <entry key="D1" value="68.95565635657553" />
+      <entry key="W1" value="69.84935355995455" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -82,23 +80,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9726549474122855" />
-      <entry key="MS500" value="0.9944701686732144" />
-      <entry key="S2" value="0.9986146661010289" />
-      <entry key="S5" value="0.9994456359721023" />
-      <entry key="S10" value="0.9997227795604651" />
-      <entry key="S30" value="0.9999075847151571" />
-      <entry key="S60" value="0.9999916206106786" />
-      <entry key="M2" value="1.0281352173998872" />
-      <entry key="M5" value="2.489605956771693" />
-      <entry key="M10" value="6.592804542741401" />
-      <entry key="M15" value="9.692724231104327" />
-      <entry key="M30" value="14.510946412653292" />
-      <entry key="H1" value="17.84426535478923" />
-      <entry key="H2" value="19.807694844260777" />
-      <entry key="H4" value="20.873639311077817" />
-      <entry key="D1" value="21.807934664520214" />
-      <entry key="W1" value="21.972453928910088" />
+      <entry key="MS100" value="1.3065828135251716" />
+      <entry key="MS500" value="2.3438977725009846" />
+      <entry key="S2" value="4.160698528885047" />
+      <entry key="S5" value="7.168903680364382" />
+      <entry key="S10" value="9.416241341024728" />
+      <entry key="S30" value="11.611609968604053" />
+      <entry key="S60" value="12.278799141884322" />
+      <entry key="M2" value="12.7335826865404" />
+      <entry key="M5" value="15.017901842438501" />
+      <entry key="M10" value="20.70658702462946" />
+      <entry key="M15" value="26.298392392748255" />
+      <entry key="M30" value="38.5344715742122" />
+      <entry key="H1" value="50.352115929762746" />
+      <entry key="H2" value="58.889668777704095" />
+      <entry key="H4" value="64.07321369179145" />
+      <entry key="D1" value="68.95565333886718" />
+      <entry key="W1" value="69.84935312311958" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -112,6 +110,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Python テスト.pytest (test_api.py 内).executor": "Run",
     "Python テスト.pytest (test_caluculator.py 内).executor": "Run",
@@ -188,15 +187,35 @@
       <option name="project" value="LOCAL" />
       <updated>1793353653522</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="feat: Add System 7 retro Mac theme switcher&#10;&#10;- Add CSS variables and data-theme=&quot;system7&quot; retro styles in style.css&#10;- Add theme select dropdown in index.html&#10;- Save selected theme preference in localStorage via main.js">
+      <option name="closed" value="true" />
+      <created>1793417666409</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1793417666409</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat: Add Score Calculator logic and pytest test suite&#10;&#10;- Implement calculate_wpm and calculate_accuracy in app/calculator.py&#10;- Add unit tests for Score Calculator in tests/test_calculator.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: Add Score Calculator logic and pytest test suite&#10;&#10;- Implement calculate_wpm and calculate_accuracy in app/calculator.py&#10;- Add unit tests for Score Calculator in tests/test_calculator.py" />
+    <MESSAGE value="feat: Add System 7 retro Mac theme switcher&#10;&#10;- Add CSS variables and data-theme=&quot;system7&quot; retro styles in style.css&#10;- Add theme select dropdown in index.html&#10;- Save selected theme preference in localStorage via main.js" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: Add System 7 retro Mac theme switcher&#10;&#10;- Add CSS variables and data-theme=&quot;system7&quot; retro styles in style.css&#10;- Add theme select dropdown in index.html&#10;- Save selected theme preference in localStorage via main.js" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

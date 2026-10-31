@@ -270,3 +270,91 @@ select {
     background-color: #bbbbbb;
     color: #000000;
 }
+
+/* キーボードスタイル */
+.keyboard-container {
+    margin-top: 1.5rem;
+    background-color: #181825;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.finger-guide-info {
+    text-align: center;
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+    color: #89b4fa;
+}
+
+.keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+}
+
+.key-row {
+    display: flex;
+    gap: 6px;
+}
+
+.key {
+    background-color: #313244;
+    color: #cdd6f4;
+    min-width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    user-select: none;
+    transition: all 0.15s ease;
+}
+
+.key-space {
+    min-width: 240px;
+}
+
+/* 特殊キーサイズ */
+.key-backspace {
+    min-width: 75px;
+    font-size: 0.75rem;
+}
+.key-tab { min-width: 50px; font-size: 0.8rem; }
+.key-caps { min-width: 55px; font-size: 0.8rem; }
+.key-enter { min-width: 65px; font-size: 0.8rem; }
+.key-shift { min-width: 75px; font-size: 0.8rem; }
+
+/* ホームポジションマーク */
+.home-key {
+    border-bottom: 2px solid #89b4fa;
+}
+
+/* ハイライト表示 */
+.key.next-key {
+    background-color: #f9e2af !important;
+    color: #11111b !important;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px #f9e2af;
+}
+
+/* System 7 テーマ適用時のキーボードスタイル */
+[data-theme="system7"] .keyboard-container {
+    background-color: #ffffff;
+    border: 2px solid #000000;
+}
+
+[data-theme="system7"] .key {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    box-shadow: 1px 1px 0px #000000;
+}
+
+[data-theme="system7"] .key.next-key {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    box-shadow: none;
+}

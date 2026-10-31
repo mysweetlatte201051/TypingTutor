@@ -6,13 +6,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const levelSelect = document.getElementById("levelSelect");
     const categorySelect = document.getElementById("categorySelect");
     const modeSelect = document.getElementById("modeSelect");
+    const themeSelect = document.getElementById("themeSelect");
     const restartBtn = document.getElementById("restartBtn");
     const modalRestartBtn = document.getElementById("modalRestartBtn");
     const resultModal = document.getElementById("resultModal");
+    const fingerNameDisplay = document.getElementById("fingerNameDisplay");
 
     const wpmDisplay = document.getElementById("wpmDisplay");
     const accuracyDisplay = document.getElementById("accuracyDisplay");
     const timeDisplay = document.getElementById("timeDisplay");
+
+    // 指の名称マッピング
+    const FINGER_NAMES = {
+        "left-pinky": "Left Pinky (左小指)",
+        "left-ring": "Left Ring (左薬指)",
+        "left-middle": "Left Middle (左中指)",
+        "left-index": "Left Index (左人差し指)",
+        "right-index": "Right Index (右人差し指)",
+        "right-middle": "Right Middle (右中指)",
+        "right-ring": "Right Ring (右薬指)",
+        "right-pinky": "Right Pinky (右小指)",
+        "thumb": "Thumb (親指)"
+    };
 
     // アプリケーション状態
     let targetText = "";
@@ -22,9 +37,22 @@ document.addEventListener("DOMContentLoaded", () => {
     let startTime = null;
     let timerInterval = null;
     let isCompleted = false;
-    let typedHistory = []; // 各位置の正誤状態を保持
+    let typedHistory = [];
 
-    // 課題テキストの取得 (GET /api/text)
+    // --- テーマ初期設定 ---
+    const savedTheme = localStorage.getItem("typing_tutor_theme") || "dark";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    if (themeSelect) {
+        themeSelect.value = savedTheme;
+        themeSelect.addEventListener("change", (e) => {
+            const selectedTheme = e.target.value;
+            document.documentElement.setAttribute("data-theme", selectedTheme);
+            localStorage.setItem("typing_tutor_theme", selectedTheme);
+            focusInput();
+        });
+    }
+
+    // --- 課題テキスト取得 (GET /api/text) ---
     async function loadText() {
         const level = levelSelect.value;
         const category = categorySelect.value;
@@ -45,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 状態のリセット
+    // --- 状態リセット ---
     function resetState() {
         currentIndex = 0;
         totalTyped = 0;
@@ -61,10 +89,11 @@ document.addEventListener("DOMContentLoaded", () => {
         resultModal.classList.add("hidden");
 
         renderText();
+        updateKeyboardHighlight();
         focusInput();
     }
 
-    // テキスト描画更新
+    // --- テキスト描画描画更新 ---
     function renderText() {
         let html = "";
         for (let i = 0; i < targetText.length; i++) {
@@ -82,11 +111,50 @@ document.addEventListener("DOMContentLoaded", () => {
         textDisplay.innerHTML = html;
     }
 
-    // キー入力制御
+    // --- オンスクリーンキーボードのハイライト＆指ガイド更新 ---
+    function updateKeyboardHighlight() {
+        document.querySelectorAll(".key.next-key").forEach(el => {
+            el.classList.remove("next-key");
+        });
+
+        if (isCompleted || currentIndex >= targetText.length) {
+            if (fingerNameDisplay) fingerNameDisplay.innerText = "Lesson Completed!";
+            return;
+        }
+
+        const nextChar = targetText[currentIndex].toLowerCase();
+
+        let keyElement = null;
+        const allKeys = document.querySelectorAll(".key[data-key]");
+        allKeys.forEach(key => {
+            if (key.getAttribute("data-key") === nextChar) {
+                keyElement = key;
+            }
+        });
+
+        if (keyElement) {
+            keyElement.classList.add("next-key");
+            const finger = keyElement.getAttribute("data-finger");
+            if (fingerNameDisplay) {
+                fingerNameDisplay.innerText = FINGER_NAMES[finger] || "Home Position";
+            }
+        } else {
+            if (fingerNameDisplay) fingerNameDisplay.innerText = "-";
+        }
+    }
+
+    // --- キー入力制御 ---
     hiddenInput.addEventListener("keydown", async (e) => {
+        // レッスン完了時に Enter キーで Next Lesson を開始
+        if (isCompleted && e.key === "Enter") {
+            e.preventDefault();
+            loadText();
+            return;
+        }
+
         if (isCompleted || !targetText) return;
 
-        // 特殊キー（Shift, Alt, Tab等）は無視
+        // 特殊キー（Shift, Control等）は無視
         if (e.key.length !== 1) return;
 
         // タイマースタート
@@ -98,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const typedChar = e.key;
         const mode = modeSelect.value;
 
-        // 打鍵判定 API (POST /api/evaluate) 呼び出し
+        // 打鍵判定 API (POST /api/evaluate)
         try {
             const response = await fetch("/api/evaluate", {
                 method: "POST",
@@ -122,6 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 isCompleted = result.is_completed;
 
                 renderText();
+                updateKeyboardHighlight();
                 await updateStats();
 
                 if (isCompleted) {
@@ -133,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // スコア計算更新 (POST /api/calculate)
+    // --- スコア計算更新 (POST /api/calculate) ---
     async function updateStats() {
         if (!startTime) return;
 
@@ -161,16 +230,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // レッスン完了処理
+    // --- レッスン完了処理 ---
     function finishLesson() {
         clearInterval(timerInterval);
         document.getElementById("finalWpm").innerText = wpmDisplay.innerText;
         document.getElementById("finalAccuracy").innerText = accuracyDisplay.innerText;
         document.getElementById("finalTime").innerText = timeDisplay.innerText;
         resultModal.classList.remove("hidden");
+        updateKeyboardHighlight();
     }
 
-    // フォーカス制御
+    // --- フォーカス制御 ---
     function focusInput() {
         hiddenInput.value = "";
         hiddenInput.focus();
@@ -185,22 +255,3 @@ document.addEventListener("DOMContentLoaded", () => {
     // 初期起動
     loadText();
 });
-
-// テーマ選択要素
-const themeSelect = document.getElementById("themeSelect");
-
-// 初期テーマ読み込み (localStorage に保存されていれば適用)
-const savedTheme = localStorage.getItem("typing_tutor_theme") || "dark";
-document.documentElement.setAttribute("data-theme", savedTheme);
-if (themeSelect) {
-    themeSelect.value = savedTheme;
-}
-
-// テーマ切り替えイベント
-if (themeSelect) {
-    themeSelect.addEventListener("change", (e) => {
-        const selectedTheme = e.target.value;
-        document.documentElement.setAttribute("data-theme", selectedTheme);
-        localStorage.setItem("typing_tutor_theme", selectedTheme);
-    });
-}

@@ -68,6 +68,84 @@
         <div class="typing-container" id="typingContainer" tabindex="0">
             <div id="textDisplay" class="text-display">Loading text...</div>
         </div>
+        <div class="keyboard-container" id="keyboardContainer">
+            <!-- 指のガイド凡例表示 -->
+            <div class="finger-guide-info">
+                <span>Next Key Finger: <strong id="fingerNameDisplay">-[Home Position]-</strong></span>
+            </div>
+
+            <!-- 仮想キーボードレイアウト -->
+            <div class="keyboard">
+                <!-- Row 1 -->
+                <div class="key-row">
+                    <div class="key" data-key="`">`</div>
+                    <div class="key" data-key="1" data-finger="left-pinky">1</div>
+                    <div class="key" data-key="2" data-finger="left-ring">2</div>
+                    <div class="key" data-key="3" data-finger="left-middle">3</div>
+                    <div class="key" data-key="4" data-finger="left-index">4</div>
+                    <div class="key" data-key="5" data-finger="left-index">5</div>
+                    <div class="key" data-key="6" data-finger="right-index">6</div>
+                    <div class="key" data-key="7" data-finger="right-index">7</div>
+                    <div class="key" data-key="8" data-finger="right-middle">8</div>
+                    <div class="key" data-key="9" data-finger="right-ring">9</div>
+                    <div class="key" data-key="0" data-finger="right-pinky">0</div>
+                    <div class="key" data-key="-" data-finger="right-pinky">-</div>
+                    <div class="key" data-key="=">=</div>
+                    <div class="key key-backspace">Backspace</div>
+                </div>
+                <!-- Row 2 -->
+                <div class="key-row">
+                    <div class="key key-tab">Tab</div>
+                    <div class="key" data-key="q" data-finger="left-pinky">Q</div>
+                    <div class="key" data-key="w" data-finger="left-ring">W</div>
+                    <div class="key" data-key="e" data-finger="left-middle">E</div>
+                    <div class="key" data-key="r" data-finger="left-index">R</div>
+                    <div class="key" data-key="t" data-finger="left-index">T</div>
+                    <div class="key" data-key="y" data-finger="right-index">Y</div>
+                    <div class="key" data-key="u" data-finger="right-index">U</div>
+                    <div class="key" data-key="i" data-finger="right-middle">I</div>
+                    <div class="key" data-key="o" data-finger="right-ring">O</div>
+                    <div class="key" data-key="p" data-finger="right-pinky">P</div>
+                    <div class="key" data-key="[">[</div>
+                    <div class="key" data-key="]">]</div>
+                </div>
+                <!-- Row 3 -->
+                <div class="key-row">
+                    <div class="key key-caps">Caps</div>
+                    <div class="key home-key" data-key="a" data-finger="left-pinky">A</div>
+                    <div class="key home-key" data-key="s" data-finger="left-ring">S</div>
+                    <div class="key home-key" data-key="d" data-finger="left-middle">D</div>
+                    <div class="key home-key" data-key="f" data-finger="left-index">F</div>
+                    <div class="key" data-key="g" data-finger="left-index">G</div>
+                    <div class="key" data-key="h" data-finger="right-index">H</div>
+                    <div class="key home-key" data-key="j" data-finger="right-index">J</div>
+                    <div class="key home-key" data-key="k" data-finger="right-middle">K</div>
+                    <div class="key home-key" data-key="l" data-finger="right-ring">L</div>
+                    <div class="key home-key" data-key=";" data-finger="right-pinky">;</div>
+                    <div class="key" data-key="'">'</div>
+                    <div class="key key-enter">Enter</div>
+                </div>
+                <!-- Row 4 -->
+                <div class="key-row">
+                    <div class="key key-shift">Shift</div>
+                    <div class="key" data-key="z" data-finger="left-pinky">Z</div>
+                    <div class="key" data-key="x" data-finger="left-ring">X</div>
+                    <div class="key" data-key="c" data-finger="left-middle">C</div>
+                    <div class="key" data-key="v" data-finger="left-index">V</div>
+                    <div class="key" data-key="b" data-finger="left-index">B</div>
+                    <div class="key" data-key="n" data-finger="right-index">N</div>
+                    <div class="key" data-key="m" data-finger="right-index">M</div>
+                    <div class="key" data-key="," data-finger="right-middle">,</div>
+                    <div class="key" data-key="." data-finger="right-ring">.</div>
+                    <div class="key" data-key="/" data-finger="right-pinky">/</div>
+                    <div class="key key-shift">Shift</div>
+                </div>
+                <!-- Row 5 -->
+                <div class="key-row">
+                    <div class="key key-space" data-key=" " data-finger="thumb">Space</div>
+                </div>
+            </div>
+        </div>
 
         <!-- 隠しキー入力フィールド（キーイベント取得用） -->
         <input type="text" id="hiddenInput" autocomplete="off" autofocus>
