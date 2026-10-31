@@ -1,0 +1,38 @@
+{
+  "default": {
+    "1": [
+      "ffff jjjj fjfj jfjf",
+      "dkdk slsl aaeu ieoa"
+    ],
+    "2": [
+      "apple banana cherry",
+      "keyboard monitor laptop"
+    ],
+    "3": [
+      "The quick brown fox jumps over the lazy dog.",
+      "Practice makes perfect when learning to type."
+    ],
+    "4": [
+      "Software engineering is the systematic application of engineering approaches to the development of software.",
+      "Continuous Integration is a software development practice where members of a team integrate their work frequently."
+    ],
+    "5": [
+      "def calculate_wpm(typed_chars, time_seconds):\n    return round((typed_chars / 5) / (time_seconds / 60))",
+      "const fetchStats = async () => {\n    const response = await fetch('/api/calculate');\n    return await response.json();\n};"
+    ]
+  },
+  "it_terms": {
+    "1": ["html css json yaml", "http https rest gRPC"],
+    "2": ["python javascript typescript", "docker kubernetes terraform"],
+    "3": ["Git is a distributed version control system.", "Flask is a micro web framework written in Python."],
+    "4": ["Test Driven Development is a software development process relying on software requirements being converted to test cases."],
+    "5": ["docker run -d -p 8080:80 --name webserver nginx:latest", "git checkout -b feature/sound-effects && git commit -m 'feat: Add sound'"]
+  },
+  "quotes": {
+    "1": ["stay hungry stay foolish", "code is poetry"],
+    "2": ["simplicity is key", "first do it right"],
+    "3": ["Talk is cheap. Show me the code.", "Simplicity is prerequisite for reliability."],
+    "4": ["Any fool can write code that a computer can understand. Good programmers write code that humans can understand."],
+    "5": ["System.out.println(\"Hello, World!\"); // Classic entry point", "console.log('Stay hungry, stay foolish.');"]
+  }
+}
