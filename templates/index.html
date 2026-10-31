@@ -147,6 +147,31 @@
             </div>
         </div>
 
+        <!-- タイピング履歴スコアボード -->
+        <div class="history-container">
+            <div class="history-header">
+                <h2>Practice History</h2>
+                <button id="clearHistoryBtn" class="btn-secondary">Clear History</button>
+            </div>
+            <div class="history-list-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Level</th>
+                            <th>WPM</th>
+                            <th>Accuracy</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <tr>
+                            <td colspan="4" class="no-data">No practice history yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- 隠しキー入力フィールド（キーイベント取得用） -->
         <input type="text" id="hiddenInput" autocomplete="off" autofocus>
 

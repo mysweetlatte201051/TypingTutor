@@ -11,10 +11,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalRestartBtn = document.getElementById("modalRestartBtn");
     const resultModal = document.getElementById("resultModal");
     const fingerNameDisplay = document.getElementById("fingerNameDisplay");
+    const historyTableBody = document.getElementById("historyTableBody");
+    const clearHistoryBtn = document.getElementById("clearHistoryBtn");
 
     const wpmDisplay = document.getElementById("wpmDisplay");
     const accuracyDisplay = document.getElementById("accuracyDisplay");
     const timeDisplay = document.getElementById("timeDisplay");
+
+    // 設定定数
+    const HISTORY_STORAGE_KEY = "typing_tutor_history";
 
     // 指の名称マッピング
     const FINGER_NAMES = {
@@ -39,6 +44,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let isCompleted = false;
     let typedHistory = [];
 
+    // --- フォーカス制御関数 ---
+    function focusInput() {
+        if (hiddenInput) {
+            hiddenInput.value = "";
+            hiddenInput.focus();
+        }
+    }
+
     // --- テーマ初期設定 ---
     const savedTheme = localStorage.getItem("typing_tutor_theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
@@ -50,6 +63,65 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem("typing_tutor_theme", selectedTheme);
             focusInput();
         });
+    }
+
+    // --- 履歴テーブル描画 ---
+    function renderHistory() {
+        if (!historyTableBody) return;
+
+        try {
+            const history = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY) || "[]");
+
+            if (!Array.isArray(history) || history.length === 0) {
+                historyTableBody.innerHTML = '<tr><td colspan="4" class="no-data">No practice history yet.</td></tr>';
+                return;
+            }
+
+            let html = "";
+            history.slice().reverse().forEach(item => {
+                html += `
+                    <tr>
+                        <td>${item.date}</td>
+                        <td>L${item.level} (${item.category})</td>
+                        <td><strong>${item.wpm}</strong></td>
+                        <td>${item.accuracy}</td>
+                    </tr>
+                `;
+            });
+            historyTableBody.innerHTML = html;
+        } catch (e) {
+            console.error("Failed to render history:", e);
+            historyTableBody.innerHTML = '<tr><td colspan="4" class="no-data">Error loading history.</td></tr>';
+        }
+    }
+
+    // --- スコア保存処理 ---
+    function saveScoreToHistory(wpm, accuracy) {
+        try {
+            const history = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY) || "[]");
+
+            const now = new Date();
+            const dateStr = `${now.getMonth() + 1}/${now.getDate()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            const newRecord = {
+                date: dateStr,
+                level: levelSelect ? levelSelect.value : "1",
+                category: categorySelect ? categorySelect.value : "default",
+                wpm: wpm || "0",
+                accuracy: accuracy || "100.0%"
+            };
+
+            history.push(newRecord);
+
+            if (history.length > 20) {
+                history.shift();
+            }
+
+            localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+            renderHistory();
+        } catch (e) {
+            console.error("Failed to save score to history:", e);
+        }
     }
 
     // --- 課題テキスト取得 (GET /api/text) ---
@@ -187,7 +259,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 typedHistory[currentIndex] = result.is_correct;
                 currentIndex = result.current_index;
-                isCompleted = result.is_completed;
+
+                if (result.is_completed || currentIndex >= targetText.length) {
+                    isCompleted = true;
+                }
 
                 renderText();
                 updateKeyboardHighlight();
@@ -233,25 +308,45 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- レッスン完了処理 ---
     function finishLesson() {
         clearInterval(timerInterval);
-        document.getElementById("finalWpm").innerText = wpmDisplay.innerText;
-        document.getElementById("finalAccuracy").innerText = accuracyDisplay.innerText;
-        document.getElementById("finalTime").innerText = timeDisplay.innerText;
-        resultModal.classList.remove("hidden");
+
+        const finalWpm = wpmDisplay ? wpmDisplay.innerText : "0";
+        const finalAccuracy = accuracyDisplay ? accuracyDisplay.innerText : "100.0%";
+        const finalTime = timeDisplay ? timeDisplay.innerText : "0s";
+
+        const finalWpmElem = document.getElementById("finalWpm");
+        const finalAccuracyElem = document.getElementById("finalAccuracy");
+        const finalTimeElem = document.getElementById("finalTime");
+
+        if (finalWpmElem) finalWpmElem.innerText = finalWpm;
+        if (finalAccuracyElem) finalAccuracyElem.innerText = finalAccuracy;
+        if (finalTimeElem) finalTimeElem.innerText = finalTime;
+
+        if (resultModal) resultModal.classList.remove("hidden");
+
         updateKeyboardHighlight();
+
+        // 履歴の保存＆更新
+        saveScoreToHistory(finalWpm, finalAccuracy);
     }
 
-    // --- フォーカス制御 ---
-    function focusInput() {
-        hiddenInput.value = "";
-        hiddenInput.focus();
+    // --- イベントリスナー登録 ---
+    if (typingContainer) typingContainer.addEventListener("click", focusInput);
+    if (restartBtn) restartBtn.addEventListener("click", loadText);
+    if (modalRestartBtn) modalRestartBtn.addEventListener("click", loadText);
+    if (levelSelect) levelSelect.addEventListener("change", loadText);
+    if (categorySelect) categorySelect.addEventListener("change", loadText);
+
+    if (clearHistoryBtn) {
+        clearHistoryBtn.addEventListener("click", () => {
+            if (confirm("Clear all practice history?")) {
+                localStorage.removeItem(HISTORY_STORAGE_KEY);
+                renderHistory();
+                focusInput();
+            }
+        });
     }
 
-    typingContainer.addEventListener("click", focusInput);
-    restartBtn.addEventListener("click", loadText);
-    modalRestartBtn.addEventListener("click", loadText);
-    levelSelect.addEventListener("change", loadText);
-    categorySelect.addEventListener("change", loadText);
-
-    // 初期起動
+    // 初期化実行
+    renderHistory();
     loadText();
 });

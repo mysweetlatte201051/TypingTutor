@@ -358,3 +358,89 @@ select {
     color: #ffffff !important;
     box-shadow: none;
 }
+
+/* 履歴スコアボードスタイル */
+.history-container {
+    margin-top: 1.5rem;
+    background-color: #181825;
+    padding: 1.2rem;
+    border-radius: 8px;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.history-header h2 {
+    font-size: 1.2rem;
+    color: #89b4fa;
+}
+
+.btn-secondary {
+    background-color: #45475a;
+    color: #cdd6f4;
+    border: none;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: #f38ba8;
+    color: #11111b;
+}
+
+.history-list-wrapper {
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.history-table th, .history-table td {
+    padding: 0.6rem;
+    border-bottom: 1px solid #313244;
+}
+
+.history-table th {
+    color: #a6adc8;
+    font-weight: 600;
+}
+
+.no-data {
+    text-align: center;
+    color: #6c7086;
+    padding: 1rem !important;
+}
+
+/* System 7 テーマ適応 */
+[data-theme="system7"] .history-container {
+    background-color: #ffffff;
+    border: 2px solid #000000;
+}
+
+[data-theme="system7"] .history-header h2 {
+    color: #000000;
+    font-family: 'Chicago', 'Geneva', monospace;
+}
+
+[data-theme="system7"] .history-table th,
+[data-theme="system7"] .history-table td {
+    border-bottom: 1px solid #000000;
+}
+
+[data-theme="system7"] .btn-secondary {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+}
