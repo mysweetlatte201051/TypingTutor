@@ -4,8 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f4c1645d-c449-4b57-927a-a589465b8232" name="変更" comment="新たなファイルを追加">
+    <list default="true" id="f4c1645d-c449-4b57-927a-a589465b8232" name="変更" comment="feat: Add Score Calculator logic and pytest test suite&#10;&#10;- Implement calculate_wpm and calculate_accuracy in app/calculator.py&#10;- Add unit tests for Score Calculator in tests/test_calculator.py">
+      <change beforePath="$PROJECT_DIR$/.idea/TypingTutor.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/TypingTutor.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/evaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/evaluator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/text_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/text_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_evaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_evaluator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,23 +44,23 @@
 }]]></component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0004400157171247" />
-      <entry key="MS500" value="1.6001410216904755" />
-      <entry key="S2" value="5.232332105360216" />
-      <entry key="S5" value="7.609944052440007" />
-      <entry key="S10" value="8.704075864404633" />
-      <entry key="S30" value="9.618945499426623" />
-      <entry key="S60" value="10.316963781368255" />
-      <entry key="M2" value="11.382794271301327" />
-      <entry key="M5" value="13.155038242596971" />
-      <entry key="M10" value="16.25455330171393" />
-      <entry key="M15" value="19.221585343132954" />
-      <entry key="M30" value="24.89670785848509" />
-      <entry key="H1" value="29.515369399244047" />
-      <entry key="H2" value="32.48203718395172" />
-      <entry key="H4" value="34.16595738341671" />
-      <entry key="D1" value="35.683334000638936" />
-      <entry key="W1" value="35.9544850831084" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0" />
+      <entry key="S10" value="1.0" />
+      <entry key="S30" value="1.0000000000686784" />
+      <entry key="S60" value="1.0000378317241418" />
+      <entry key="M2" value="1.0281592045250838" />
+      <entry key="M5" value="2.489633879284484" />
+      <entry key="M10" value="6.59284423536394" />
+      <entry key="M15" value="9.692763653256359" />
+      <entry key="M30" value="14.510976196174619" />
+      <entry key="H1" value="17.844283730739534" />
+      <entry key="H2" value="19.807705058392322" />
+      <entry key="H4" value="20.873644696694424" />
+      <entry key="D1" value="21.8079356028145" />
+      <entry key="W1" value="21.97245406397575" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -75,23 +82,23 @@
       <entry key="W1" value="0.0" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9730745444250163" />
-      <entry key="MS500" value="1.5878172644931718" />
-      <entry key="S2" value="5.21678049651976" />
-      <entry key="S5" value="7.6003866451934545" />
-      <entry key="S10" value="8.698532246663406" />
-      <entry key="S30" value="9.61689279299348" />
-      <entry key="S60" value="10.315880206807165" />
-      <entry key="M2" value="11.382214509948495" />
-      <entry key="M5" value="13.154783062202089" />
-      <entry key="M10" value="16.254406324087974" />
-      <entry key="M15" value="19.221475015676866" />
-      <entry key="M30" value="24.89664088255697" />
-      <entry key="H1" value="29.51533110129201" />
-      <entry key="H2" value="32.482016489630674" />
-      <entry key="H4" value="34.1659465975976" />
-      <entry key="D1" value="35.683332137116125" />
-      <entry key="W1" value="35.95448481520879" />
+      <entry key="MS100" value="0.9726549474122855" />
+      <entry key="MS500" value="0.9944701686732144" />
+      <entry key="S2" value="0.9986146661010289" />
+      <entry key="S5" value="0.9994456359721023" />
+      <entry key="S10" value="0.9997227795604651" />
+      <entry key="S30" value="0.9999075847151571" />
+      <entry key="S60" value="0.9999916206106786" />
+      <entry key="M2" value="1.0281352173998872" />
+      <entry key="M5" value="2.489605956771693" />
+      <entry key="M10" value="6.592804542741401" />
+      <entry key="M15" value="9.692724231104327" />
+      <entry key="M30" value="14.510946412653292" />
+      <entry key="H1" value="17.84426535478923" />
+      <entry key="H2" value="19.807694844260777" />
+      <entry key="H4" value="20.873639311077817" />
+      <entry key="D1" value="21.807934664520214" />
+      <entry key="W1" value="21.972453928910088" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -181,15 +188,7 @@
       <option name="project" value="LOCAL" />
       <updated>1793353653522</updated>
     </task>
-    <task id="LOCAL-00002" summary="新たなファイルを追加">
-      <option name="closed" value="true" />
-      <created>1793414710611</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1793414710611</updated>
-    </task>
-    <option name="localTasksCounter" value="3" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -197,9 +196,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat: Add Score Calculator logic and pytest test suite&#10;&#10;- Implement calculate_wpm and calculate_accuracy in app/calculator.py&#10;- Add unit tests for Score Calculator in tests/test_calculator.py" />
-    <MESSAGE value="ci: Add GitHub Actions workflow for automated pytest run" />
-    <MESSAGE value="新たなファイルを追加" />
-    <option name="LAST_COMMIT_MESSAGE" value="新たなファイルを追加" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: Add Score Calculator logic and pytest test suite&#10;&#10;- Implement calculate_wpm and calculate_accuracy in app/calculator.py&#10;- Add unit tests for Score Calculator in tests/test_calculator.py" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
