@@ -1,99 +1,87 @@
-# ⌨️ Typing Tutor (English Typing Practice App)
+# Typing Tutor ⌨️（English Typing Practice App）
 
-> 約30年前のMac版『Typing Tutor』にオマージュを捧げた、レトロテーマ対応の英語タイピング学習Webアプリケーション。
-> テスト駆動開発（TDD）による堅牢なバックエンド設計と、GitHub ActionsによるCI（継続的インテグレーション）自動テストパイプラインを構築したポートフォリオ作品です。
+> **Mac System 7 Homage English Typing Application**  
+> 90年代クラシックMac（System 7）のGUIをオマージュした、TDD（テスト駆動開発）および CI パイプラインで構築された英語タイピング学習 Web アプリケーション。
 
-![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white)
-![Flask](https://img.shields.io/badge/Flask-3.0+-000000?style=flat&logo=flask&logoColor=white)
-![pytest](https://img.shields.io/badge/pytest-Passed-0A9EDC?style=flat&logo=pytest&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?style=flat&logo=githubactions&logoColor=white)
-
----
-
-## 🌟 主な機能 (Key Features)
-
-- **リアルタイム打鍵判定 & スコア計算 API**
-  - **モード切り替え:** ミス時に打鍵をストップする `Strict` モードと、ミスを許容して進む `Free` モードをサポート。
-  - **リアルタイム計算:** 入力スピード（WPM: Words Per Minute）および正確率（Accuracy）をリアルタイムで算出。
-- **レトロ＆モダン UI テーマ機能**
-  - **Mac System 7 (1991):** 90年代クラシックMac（System 7風）のモノクロ・立体グレーデザイン。
-  - **Modern Dark:** 視認性に優れたモダンなダークテーマ。
-  - テーマ設定はブラウザの `localStorage` に保持されます。
-- **オンスクリーンキーボード & 指位置ガイド**
-  - 次に押すべきキーをリアルタイムでハイライト表示。
-  - ホームポジションおよび推奨する指（左小指、右人差し指など）を日本語・英語で案内。
-- **練習スコア履歴（Practice History）**
-  - レッスン完了時のWPM、正確率、日時、チャレンジレベルを `localStorage` に保存。
-  - 過去の練習履歴をテーブル一覧でいつでも振り返り・クリア可能。
-- **豊富な練習コンテンツ**
-  - レベル別（ホームポジション / 単語 / 英文）およびカテゴリ別（デフォルト / IT用語 / 名言）の課題テキストを搭載。
+![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
+![Flask](https://img.shields.io/badge/Flask-3.0+-green.svg)
+![pytest](https://img.shields.io/badge/pytest-PASSED-brightgreen.svg)
+![Build Status](https://github.com/mysweetlatte201051/TypingTutor/actions/workflows/test.yml/badge.svg)
 
 ---
 
-## 🛠 技術スタック (Tech Stack)
+## 🌟 主な機能（Key Features）
 
-### Backend / Quality Assurance
-- **Language:** Python 3.11+
-- **Framework:** Flask (RESTful Web API)
-- **Testing:** pytest (単体テスト・API統合テスト)
-- **CI/CD:** GitHub Actions (コードPush時の全テスト自動実行)
-
-### Frontend
-- **HTML5 / CSS3** (CSS変数を用いた動的テーマ切り替え、レスポンシブデザイン)
-- **JavaScript (ES6+)** (Fetch APIによる非同期通信、DOM操作、`localStorage` 活用)
+- **レトロ＆モダン UI テーマ切り替え:** 90年代クラシックMac（System 7）風モノクロGUIと Modern Dark テーマをワンタップ切り替え（`localStorage` 保存）。
+- **リアルタイム打鍵判定 Engine:** `Strict` モード（誤打鍵時に止まる）と `Free` モード（誤打鍵でも進む）に対応。
+- **オンスクリーンキーボード & 指位置ガイド:** 次に入力すべきキーと推奨される指の位置（Home Position）をリアルタイムハイライト。
+- **Web Audio API による効果音:** タイプライター風の打鍵音およびエラー時の低音警告音（遅延なし・トグル切り替え可能）。
+- **Chart.js によるスコア推移グラフ:** 過去のタイピング練習履歴から WPM（入力速度）と Accuracy（正確率）の成長推移をビジュアル可視化。
+- **JSON ベースの柔軟な練習テキスト管理:** Level 1（ホームポジション）から Level 4（長文段落）、Level 5（プログラミングコード / IT実務英文）まで拡張可能。
 
 ---
 
-## 🏗 ディレクトリ構造 (Project Structure)
+## 🏗️ Tech Stack
+
+- **Backend:** Python 3.11+, Flask (RESTful Web API)
+- **Testing / QA:** `pytest`, GitHub Actions (CI)
+- **Frontend:** HTML5, CSS3 (CSS Variables), JavaScript (ES6+, Fetch API, Web Audio API, Chart.js)
+- **Data Management:** JSON (`app/data/texts.json`), Browser `localStorage`
+
+---
+
+## 📂 Project Structure
 
 ```text
 TypingTutor/
-├── .github/
-│   └── workflows/
-│       └── test.yml          # GitHub Actions CI パイプライン定義
 ├── app/
-│   ├── __init__.py
-│   ├── api.py                # Flask Web API & ルーティング
-│   ├── calculator.py         # WPM・正確率計算ロジック
-│   ├── evaluator.py          # 打鍵正誤判定ロジック
-│   └── text_manager.py       # 練習用テキストデータ管理
+│   ├── data/
+│   │   └── texts.json         # レベル・カテゴリ別練習テキスト（Level 1〜5）
+│   ├── api.py                 # Flask RESTful API エンドポイント
+│   ├── calculator.py          # WPM / Accuracy 計算モジュール
+│   ├── evaluator.py           # 打鍵判定コアロジック
+│   └── text_manager.py        # JSONテキストデータ読み込みモジュール
 ├── static/
-│   ├── css/
-│   │   └── style.css         # UIスタイル & System 7 レトロテーマ定義
-│   └── js/
-│       └── main.js           # フロントエンドロジック & イベントハンドラ
+│   ├── css/style.css          # System 7 / Dark テーマ定義 & レスポンシブUI
+│   └── js/main.js             # API通信, Web Audio API, Chart.js 描画ロジック
 ├── templates/
-│   └── index.html            # メイン画面HTML
-├── tests/
-│   ├── test_api.py           # API統合テスト
-│   ├── test_calculator.py    # 計算ロジック単体テスト
-│   ├── test_evaluator.py     # 判定ロジック単体テスト
-│   └── test_text_manager.py # テキスト管理単体テスト
-├── requirements.txt          # 依存ライブラリ一覧
-└── README.md
+│   └── index.html             # メインアプリケーション画面
+├── tests/                     # pytest 単体・統合テストスイート
+│   ├── test_api.py
+│   ├── test_calculator.py
+│   ├── test_evaluator.py
+│   └── test_text_manager.py
+├── .github/workflows/
+│   └── test.yml               # GitHub Actions CI パイプライン
+└── requirements.txt
 ```
 
-## 🚀 起動手順 (Local Setup)
-1. リポジトリのクローンと移動
+## 🚀Quick Start
+1. リポジトリのクローン:
+
 ```Bash
 git clone [https://github.com/mysweetlatte201051/TypingTutor.git](https://github.com/mysweetlatte201051/TypingTutor.git)
 cd TypingTutor
-```
+````
 
-2. 仮想環境の作成とライブラリのインストール
+2. 仮想環境構築と依存パッケージのインストール:
+
 ```Bash
 python -m venv .venv
-source .venv/bin/activate  # Windowsの場合: .venv\Scripts\activate
+source .venv/bin/activate
 pip install -r requirements.txt
-```
+````
 
-3. pytest による自動テストの実行
+3. テストの実行:
+
 ```Bash
 pytest -v
-```
+````
 
-4. アプリケーションの起動
+4. アプリケーションの起動:
+
 ```Bash
 python -m app.api
 ```
-起動後、ブラウザで http://127.0.0.1:5000 にアクセスしてご利用ください。
+
+ブラウザで http://127.0.0.1:5000 にアクセスしてください。
