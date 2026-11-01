@@ -13,46 +13,11 @@
             <p class="subtitle">English Typing Practice App</p>
         </header>
 
-        <!-- 設定パネル -->
-        <div class="control-panel">
-            <div class="control-group">
-                <label for="levelSelect">Level:</label>
-                <select id="levelSelect">
-                    <option value="1">Level 1 (Home Position)</option>
-                    <option value="2">Level 2 (Words)</option>
-                    <option value="3">Level 3 (Sentence)</option>
-                    <option value="4">Level 4 (Paragraph)</option>
-                    <option value="5">Level 5 (Code & Tech)</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="categorySelect">Category:</label>
-                <select id="categorySelect">
-                    <option value="default">Default</option>
-                    <option value="it_terms">IT Terms</option>
-                    <option value="quotes">Quotes</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="modeSelect">Mode:</label>
-                <select id="modeSelect">
-                    <option value="strict">Strict (Stop on Error)</option>
-                    <option value="free">Free (Flowing)</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="themeSelect">Theme:</label>
-                <select id="themeSelect">
-                    <option value="dark">Modern Dark</option>
-                    <option value="system7">Mac System 7 (1991)</option>
-                </select>
-            </div>
-            <!-- サウンド切替スイッチ -->
-            <div class="control-group">
-                <label for="soundToggle">Sound:</label>
-                <button id="soundToggle" class="btn-secondary" type="button">🔊 ON</button>
-            </div>
-            <button id="restartBtn" class="btn">New Text</button>
+        <!-- メイン画面上の簡易バー（現在の設定確認＆変更ボタン） -->
+        <div class="top-bar">
+            <button id="openSettingsBtn" class="btn">⚙ Select Lesson / Settings</button>
+            <button id="soundToggle" class="btn-secondary" type="button">🔊 ON</button>
+            <button id="restartBtn" class="btn-secondary">Restart</button>
         </div>
 
         <!-- リアルタイムスコア表示 -->
@@ -71,19 +36,18 @@
             </div>
         </div>
 
-        <!-- タイピングテキスト表示エリア -->
+        <!-- タイピングテキスト表示エリア（縦スクロール対応） -->
         <div class="typing-container" id="typingContainer" tabindex="0">
             <div id="textDisplay" class="text-display">Loading text...</div>
         </div>
+
         <div class="keyboard-container" id="keyboardContainer">
-            <!-- 指のガイド凡例表示 -->
             <div class="finger-guide-info">
                 <span>Next Key Finger: <strong id="fingerNameDisplay">-[Home Position]-</strong></span>
             </div>
 
             <!-- 仮想キーボードレイアウト -->
             <div class="keyboard">
-                <!-- Row 1 -->
                 <div class="key-row">
                     <div class="key" data-key="`">`</div>
                     <div class="key" data-key="1" data-finger="left-pinky">1</div>
@@ -100,7 +64,6 @@
                     <div class="key" data-key="=">=</div>
                     <div class="key key-backspace">Backspace</div>
                 </div>
-                <!-- Row 2 -->
                 <div class="key-row">
                     <div class="key key-tab">Tab</div>
                     <div class="key" data-key="q" data-finger="left-pinky">Q</div>
@@ -116,7 +79,6 @@
                     <div class="key" data-key="[">[</div>
                     <div class="key" data-key="]">]</div>
                 </div>
-                <!-- Row 3 -->
                 <div class="key-row">
                     <div class="key key-caps">Caps</div>
                     <div class="key home-key" data-key="a" data-finger="left-pinky">A</div>
@@ -132,7 +94,6 @@
                     <div class="key" data-key="'">'</div>
                     <div class="key key-enter">Enter</div>
                 </div>
-                <!-- Row 4 -->
                 <div class="key-row">
                     <div class="key key-shift">Shift</div>
                     <div class="key" data-key="z" data-finger="left-pinky">Z</div>
@@ -147,14 +108,13 @@
                     <div class="key" data-key="/" data-finger="right-pinky">/</div>
                     <div class="key key-shift">Shift</div>
                 </div>
-                <!-- Row 5 -->
                 <div class="key-row">
                     <div class="key key-space" data-key=" " data-finger="thumb">Space</div>
                 </div>
             </div>
         </div>
 
-        <!-- タイピング履歴スコアボード -->
+        <!-- 履歴エリア -->
         <div class="history-container">
             <div class="history-header">
                 <h2>Practice History</h2>
@@ -179,10 +139,63 @@
             </div>
         </div>
 
-        <!-- 隠しキー入力フィールド（キーイベント取得用） -->
         <input type="text" id="hiddenInput" autocomplete="off" autofocus>
 
-        <!-- 終了時モーダル -->
+        <!-- 設定・レッスン選択ポップアップ（モーダル） -->
+        <div id="settingsModal" class="modal">
+            <div class="modal-content modal-settings">
+                <h2>Select Lesson & Settings</h2>
+
+                <div class="control-panel-modal">
+                    <div class="control-group">
+                        <label for="categorySelect">Book / Category:</label>
+                        <select id="categorySelect">
+                            <option value="default">Default Lessons</option>
+                            <option value="alice">Alice in Wonderland</option>
+                            <option value="it_terms">IT Terms</option>
+                            <option value="quotes">Quotes</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="chapterSelect">Chapter:</label>
+                        <select id="chapterSelect" disabled>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="levelSelect">Level:</label>
+                        <select id="levelSelect">
+                            <option value="1">Level 1 (Home Position)</option>
+                            <option value="2">Level 2 (Words)</option>
+                            <option value="3">Level 3 (Sentence)</option>
+                            <option value="4">Level 4 (Paragraph)</option>
+                            <option value="5">Level 5 (Code & Tech)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="modeSelect">Mode:</label>
+                        <select id="modeSelect">
+                            <option value="strict">Strict (Stop on Error)</option>
+                            <option value="free">Free (Flowing)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="themeSelect">Theme:</label>
+                        <select id="themeSelect">
+                            <option value="dark">Modern Dark</option>
+                            <option value="system7">Mac System 7 (1991)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button id="startLessonBtn" class="btn btn-large">Start Lesson</button>
+            </div>
+        </div>
+
+        <!-- 結果表示モーダル -->
         <div id="resultModal" class="modal hidden">
             <div class="modal-content">
                 <h2>Lesson Completed!</h2>

@@ -1,470 +1,466 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // DOM要素
-    const textDisplay = document.getElementById("textDisplay");
-    const hiddenInput = document.getElementById("hiddenInput");
-    const typingContainer = document.getElementById("typingContainer");
-    const levelSelect = document.getElementById("levelSelect");
-    const categorySelect = document.getElementById("categorySelect");
-    const modeSelect = document.getElementById("modeSelect");
-    const themeSelect = document.getElementById("themeSelect");
-    const restartBtn = document.getElementById("restartBtn");
-    const modalRestartBtn = document.getElementById("modalRestartBtn");
-    const resultModal = document.getElementById("resultModal");
-    const fingerNameDisplay = document.getElementById("fingerNameDisplay");
-    const historyTableBody = document.getElementById("historyTableBody");
-    const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+/**
+ * Typing Tutor - Main JavaScript Module
+ */
 
-    const wpmDisplay = document.getElementById("wpmDisplay");
-    const accuracyDisplay = document.getElementById("accuracyDisplay");
-    const timeDisplay = document.getElementById("timeDisplay");
+// DOM 要素の取得
+const textDisplay = document.getElementById("textDisplay");
+const hiddenInput = document.getElementById("hiddenInput");
+const wpmDisplay = document.getElementById("wpmDisplay");
+const accuracyDisplay = document.getElementById("accuracyDisplay");
+const timeDisplay = document.getElementById("timeDisplay");
 
-    // 設定定数
-    const HISTORY_STORAGE_KEY = "typing_tutor_history";
+const categorySelect = document.getElementById("categorySelect");
+const chapterSelect = document.getElementById("chapterSelect");
+const levelSelect = document.getElementById("levelSelect");
+const modeSelect = document.getElementById("modeSelect");
+const themeSelect = document.getElementById("themeSelect");
 
-    // 指の名称マッピング
-    const FINGER_NAMES = {
-        "left-pinky": "Left Pinky (左小指)",
-        "left-ring": "Left Ring (左薬指)",
-        "left-middle": "Left Middle (左中指)",
-        "left-index": "Left Index (左人差し指)",
-        "right-index": "Right Index (右人差し指)",
-        "right-middle": "Right Middle (右中指)",
-        "right-ring": "Right Ring (右薬指)",
-        "right-pinky": "Right Pinky (右小指)",
-        "thumb": "Thumb (親指)"
-    };
+const soundToggle = document.getElementById("soundToggle");
+const restartBtn = document.getElementById("restartBtn");
+const openSettingsBtn = document.getElementById("openSettingsBtn");
+const startLessonBtn = document.getElementById("startLessonBtn");
 
-    // アプリケーション状態
-    let targetText = "";
-    let currentIndex = 0;
-    let totalTyped = 0;
-    let errors = 0;
-    let startTime = null;
-    let timerInterval = null;
-    let isCompleted = false;
-    let typedHistory = [];
+const fingerNameDisplay = document.getElementById("fingerNameDisplay");
+const historyTableBody = document.getElementById("historyTableBody");
+const clearHistoryBtn = document.getElementById("clearHistoryBtn");
 
-    function escapeHtml(char) {
-        if (char === "&") return "&amp;";
-        if (char === "<") return "&lt;";
-        if (char === ">") return "&gt;";
-        if (char === '"') return "&quot;";
-        if (char === "'") return "&#039;";
-        return char;
+const settingsModal = document.getElementById("settingsModal");
+const resultModal = document.getElementById("resultModal");
+const finalWpm = document.getElementById("finalWpm");
+const finalAccuracy = document.getElementById("finalAccuracy");
+const finalTime = document.getElementById("finalTime");
+const modalRestartBtn = document.getElementById("modalRestartBtn");
+const typingContainer = document.getElementById("typingContainer");
+
+// アプリケーション状態変数
+let targetText = "";
+let currentIndex = 0;
+let typedHistory = [];
+let startTime = null;
+let timerInterval = null;
+let errorsCount = 0;
+let totalTypedCount = 0;
+let isCompleted = false;
+let soundEnabled = true;
+
+// Web Audio API 効果音
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playKeySound(type) {
+    if (!soundEnabled) return;
+    if (audioCtx.state === "suspended") {
+        audioCtx.resume();
     }
 
-    // 2. 確定版テキスト描画関数
-    function renderText() {
-        const textDisplay = document.getElementById("textDisplay");
-        if (!textDisplay || !targetText) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
 
-        let html = "";
+    const now = audioCtx.currentTime;
 
-        for (let i = 0; i < targetText.length; i++) {
-            const char = targetText[i];
+    if (type === "correct") {
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+        osc.start(now);
+        osc.stop(now + 0.05);
+    } else if (type === "error") {
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(180, now);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+        osc.start(now);
+        osc.stop(now + 0.15);
+    } else if (type === "complete") {
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(659.25, now + 0.1);
+        osc.frequency.setValueAtTime(783.99, now + 0.2);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+        osc.start(now);
+        osc.stop(now + 0.4);
+    }
+}
 
-            // 状態に応じたクラス（correct / incorrect / current / pending）
-            let className = "pending";
-            if (i < currentIndex) {
-                className = typedHistory[i] ? "correct" : "incorrect";
-            } else if (i === currentIndex) {
-                className = "current"; // 現在入力中の文字
-            }
+// Control UI Status
+function updateControlState() {
+    if (!categorySelect || !chapterSelect || !levelSelect) return;
+    const category = categorySelect.value;
 
-            if (char === "\n") {
-                // 改行マーク（↵）にクラスを適用し、<br> は span の外に出す
-                html += `<span class="${className} char-newline">↵</span><br>`;
-            } else if (char === " ") {
-                // スペース
-                html += `<span class="${className} char-space">&nbsp;</span>`;
-            } else {
-                // 通常の文字
-                html += `<span class="${className}">${escapeHtml(char)}</span>`;
-            }
-        }
+    if (category === "alice") {
+        chapterSelect.disabled = false;
+        levelSelect.disabled = true;
+    } else {
+        chapterSelect.disabled = true;
+        levelSelect.disabled = false;
+    }
+}
 
-        textDisplay.innerHTML = html;
+async function updateChapterOptions(category) {
+    if (!chapterSelect) return;
+
+    if (category !== "alice") {
+        chapterSelect.innerHTML = "";
+        return;
     }
 
-    // --- フォーカス制御関数 ---
-    function focusInput() {
-        if (hiddenInput) {
-            hiddenInput.value = "";
-            hiddenInput.focus();
-        }
-    }
+    try {
+        const response = await fetch(`/api/chapters?category=${category}`);
+        if (!response.ok) throw new Error("Failed to fetch chapters");
 
-    // --- テーマ初期設定 ---
-    const savedTheme = localStorage.getItem("typing_tutor_theme") || "dark";
-    document.documentElement.setAttribute("data-theme", savedTheme);
-    if (themeSelect) {
-        themeSelect.value = savedTheme;
-        themeSelect.addEventListener("change", (e) => {
-            const selectedTheme = e.target.value;
-            document.documentElement.setAttribute("data-theme", selectedTheme);
-            localStorage.setItem("typing_tutor_theme", selectedTheme);
-            focusInput();
-        });
-    }
+        const data = await response.json();
+        chapterSelect.innerHTML = "";
 
-    // --- 履歴テーブル描画 ---
-    function renderHistory() {
-        if (!historyTableBody) return;
-
-        try {
-            const history = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY) || "[]");
-
-            if (!Array.isArray(history) || history.length === 0) {
-                historyTableBody.innerHTML = '<tr><td colspan="4" class="no-data">No practice history yet.</td></tr>';
-                return;
-            }
-
-            let html = "";
-            history.slice().reverse().forEach(item => {
-                html += `
-                    <tr>
-                        <td>${item.date}</td>
-                        <td>L${item.level} (${item.category})</td>
-                        <td><strong>${item.wpm}</strong></td>
-                        <td>${item.accuracy}</td>
-                    </tr>
-                `;
+        if (data.chapters && data.chapters.length > 0) {
+            data.chapters.forEach(ch => {
+                const option = document.createElement("option");
+                option.value = ch;
+                option.textContent = `Chapter ${ch}`;
+                chapterSelect.appendChild(option);
             });
-            historyTableBody.innerHTML = html;
-        } catch (e) {
-            console.error("Failed to render history:", e);
-            historyTableBody.innerHTML = '<tr><td colspan="4" class="no-data">Error loading history.</td></tr>';
+        } else {
+            const option = document.createElement("option");
+            option.value = "1";
+            option.textContent = "Chapter 1";
+            chapterSelect.appendChild(option);
         }
+    } catch (error) {
+        console.error("Error updating chapters:", error);
     }
+}
 
-    // --- スコア保存処理 ---
-    function saveScoreToHistory(wpm, accuracy) {
-        try {
-            const history = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY) || "[]");
+function escapeHtml(str) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
-            const now = new Date();
-            const dateStr = `${now.getMonth() + 1}/${now.getDate()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+async function loadText() {
+    if (!categorySelect) return;
 
-            const newRecord = {
-                date: dateStr,
-                level: levelSelect ? levelSelect.value : "1",
-                category: categorySelect ? categorySelect.value : "default",
-                wpm: wpm || "0",
-                accuracy: accuracy || "100.0%"
-            };
+    const category = categorySelect.value;
+    const paramKey = (category === "alice") ? "chapter" : "level";
+    const paramValue = (category === "alice")
+        ? (chapterSelect && chapterSelect.value ? chapterSelect.value : "1")
+        : (levelSelect && levelSelect.value ? levelSelect.value : "1");
 
-            history.push(newRecord);
+    try {
+        const response = await fetch(`/api/text?category=${category}&${paramKey}=${paramValue}`);
+        if (!response.ok) throw new Error("Failed to fetch text");
 
-            if (history.length > 20) {
-                history.shift();
-            }
+        const data = await response.json();
 
-            localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
-            renderHistory();
-        } catch (e) {
-            console.error("Failed to save score to history:", e);
-        }
-    }
+        // クォートおよびダッシュ（— –）を標準入力可能な記号に自動変換・標準化
+        targetText = (data.text || "The quick brown fox jumps over the lazy dog.")
+            .replace(/[“”]/g, '"')
+            .replace(/[‘’]/g, "'")
+            .replace(/[—–]/g, "-");
 
-    // --- 課題テキスト取得 (GET /api/text) ---
-    async function loadText() {
-        const level = levelSelect.value;
-        const category = categorySelect.value;
-
-        try {
-            const response = await fetch(`/api/text?level=${level}&category=${category}`);
-            const data = await response.json();
-
-            if (response.ok) {
-                targetText = data.text;
-                resetState();
-            } else {
-                textDisplay.innerText = "Error loading text.";
-            }
-        } catch (error) {
-            console.error("Failed to fetch text:", error);
-            textDisplay.innerText = "Server error.";
-        }
-    }
-
-    // --- 状態リセット ---
-    function resetState() {
         currentIndex = 0;
-        totalTyped = 0;
-        errors = 0;
-        startTime = null;
+        typedHistory = [];
+        errorsCount = 0;
+        totalTypedCount = 0;
         isCompleted = false;
-        typedHistory = new Array(targetText.length).fill(null);
+        startTime = null;
 
-        clearInterval(timerInterval);
-        wpmDisplay.innerText = "0";
-        accuracyDisplay.innerText = "100.0%";
-        timeDisplay.innerText = "0s";
-        resultModal.classList.add("hidden");
+        if (timerInterval) clearInterval(timerInterval);
+        resetStatsDisplay();
 
         renderText();
         updateKeyboardHighlight();
-        focusInput();
+        focusHiddenInput();
+    } catch (error) {
+        console.error("Text load error:", error);
+        if (textDisplay) textDisplay.textContent = "Failed to load lesson text.";
     }
+}
 
-    // --- オンスクリーンキーボードのハイライト＆指ガイド更新 ---
-    function updateKeyboardHighlight() {
-        document.querySelectorAll(".key.next-key").forEach(el => {
-            el.classList.remove("next-key");
-        });
+function renderText() {
+    if (!textDisplay) return;
 
-        if (isCompleted || currentIndex >= targetText.length) {
-            if (fingerNameDisplay) fingerNameDisplay.innerText = "Lesson Completed!";
-            return;
+    let html = "";
+    for (let i = 0; i < targetText.length; i++) {
+        const char = targetText[i];
+        let displayChar = escapeHtml(char);
+
+        if (char === "\n") {
+            displayChar = "↵<br>";
         }
 
-        const nextChar = targetText[currentIndex].toLowerCase();
-
-        let keyElement = null;
-        const allKeys = document.querySelectorAll(".key[data-key]");
-        allKeys.forEach(key => {
-            if (key.getAttribute("data-key") === nextChar) {
-                keyElement = key;
-            }
-        });
-
-        if (keyElement) {
-            keyElement.classList.add("next-key");
-            const finger = keyElement.getAttribute("data-finger");
-            if (fingerNameDisplay) {
-                fingerNameDisplay.innerText = FINGER_NAMES[finger] || "Home Position";
-            }
+        if (i < currentIndex) {
+            const historyItem = typedHistory[i];
+            const className = (historyItem && historyItem.isCorrect) ? "char-correct" : "char-incorrect";
+            html += `<span class="${className}">${displayChar}</span>`;
+        } else if (i === currentIndex) {
+            html += `<span class="char-current">${displayChar}</span>`;
         } else {
-            if (fingerNameDisplay) fingerNameDisplay.innerText = "-";
+            html += `<span class="char-pending">${displayChar}</span>`;
         }
     }
 
+    textDisplay.innerHTML = html;
 
-     hiddenInput.addEventListener("keydown", async (e) => {
-        // レッスン完了時に Enter キーで Next Lesson を開始
-        if (isCompleted && e.key === "Enter") {
-            e.preventDefault();
-            loadText();
-            return;
-        }
+    // 現在の入力位置へスクロール追従
+    const currentEl = textDisplay.querySelector(".char-current");
+    if (currentEl && typingContainer) {
+        currentEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+}
 
-        if (isCompleted || !targetText) return;
+function updateKeyboardHighlight() {
+    document.querySelectorAll(".key").forEach(key => key.classList.remove("next-key"));
 
-        // 1. Enterキーと1文字以外の特殊キー（Shift, Control, Alt等）は無視
-        if (e.key.length !== 1 && e.key !== "Enter") return;
+    if (currentIndex >= targetText.length) {
+        if (fingerNameDisplay) fingerNameDisplay.textContent = "-[ Completed ]-";
+        return;
+    }
 
-        // 2. ブラウザのデフォルト動作（Enterによるページスクロール等）を防止
-        if (e.key === "Enter") {
-            e.preventDefault();
-        }
+    const nextChar = targetText[currentIndex];
+    let searchKey = nextChar.toLowerCase();
 
-        // タイマースタート
-        if (!startTime) {
-            startTime = new Date();
-            timerInterval = setInterval(updateStats, 200);
-        }
+    if (nextChar === "\n") {
+        searchKey = "enter";
+    } else if (nextChar === " ") {
+        searchKey = " ";
+    } else if (nextChar === '"' || nextChar === "'") {
+        searchKey = "'";
+    }
 
-        // 3. Enter キーの場合は API へ改行文字 "\n" として渡す
-        const typedChar = (e.key === "Enter") ? "\n" : e.key;
-        const mode = modeSelect.value;
-
-        // 打鍵判定 API (POST /api/evaluate)
-        try {
-            const response = await fetch("/api/evaluate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    target_text: targetText,
-                    current_index: currentIndex,
-                    typed_char: typedChar,
-                    mode: mode
-                })
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                totalTyped++;
-
-                // 効果音再生
-                if (!result.is_correct) {
-                    errors++;
-                    playErrorSound(); // ミス時の警告音
-                } else {
-                    playTypeSound();  // 正しい打鍵音
-                }
-
-                typedHistory[currentIndex] = result.is_correct;
-                currentIndex = result.current_index;
-
-                if (result.is_completed || currentIndex >= targetText.length) {
-                    isCompleted = true;
-                }
-
-                renderText();
-                updateKeyboardHighlight();
-                await updateStats();
-
-                if (isCompleted) {
-                    finishLesson();
-                }
-            }
-        } catch (error) {
-            console.error("Evaluation API error:", error);
-        }
+    const targetKeyEl = Array.from(document.querySelectorAll(".key")).find(el => {
+        const keyVal = el.getAttribute("data-key");
+        if (keyVal) return keyVal.toLowerCase() === searchKey;
+        if (searchKey === "enter" && el.classList.contains("key-enter")) return true;
+        return false;
     });
 
-    // --- スコア計算更新 (POST /api/calculate) ---
-    async function updateStats() {
-        if (!startTime) return;
-
-        const timeElapsed = (new Date() - startTime) / 1000;
-        timeDisplay.innerText = `${Math.floor(timeElapsed)}s`;
-
-        try {
-            const response = await fetch("/api/calculate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    total_typed: totalTyped,
-                    errors: errors,
-                    time_seconds: timeElapsed
-                })
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                wpmDisplay.innerText = data.wpm;
-                accuracyDisplay.innerText = `${data.accuracy}%`;
-            }
-        } catch (error) {
-            console.error("Calculation API error:", error);
+    if (targetKeyEl) {
+        targetKeyEl.classList.add("next-key");
+        const finger = targetKeyEl.getAttribute("data-finger") || "Home Position";
+        if (fingerNameDisplay) {
+            fingerNameDisplay.textContent = `Next Key: '${nextChar === "\n" ? "Enter" : nextChar}' (${finger})`;
         }
     }
+}
 
-    // --- レッスン完了処理 ---
-    function finishLesson() {
-        clearInterval(timerInterval);
+function updateStats() {
+    if (!startTime) return;
 
-        const finalWpm = wpmDisplay ? wpmDisplay.innerText : "0";
-        const finalAccuracy = accuracyDisplay ? accuracyDisplay.innerText : "100.0%";
-        const finalTime = timeDisplay ? timeDisplay.innerText : "0s";
+    const currentTime = new Date();
+    const timeSeconds = (currentTime - startTime) / 1000;
 
-        const finalWpmElem = document.getElementById("finalWpm");
-        const finalAccuracyElem = document.getElementById("finalAccuracy");
-        const finalTimeElem = document.getElementById("finalTime");
+    if (timeDisplay) timeDisplay.textContent = `${Math.floor(timeSeconds)}s`;
 
-        if (finalWpmElem) finalWpmElem.innerText = finalWpm;
-        if (finalAccuracyElem) finalAccuracyElem.innerText = finalAccuracy;
-        if (finalTimeElem) finalTimeElem.innerText = finalTime;
+    if (totalTypedCount > 0) {
+        const accuracy = Math.max(0, ((totalTypedCount - errorsCount) / totalTypedCount) * 100);
+        if (accuracyDisplay) accuracyDisplay.textContent = `${accuracy.toFixed(1)}%`;
 
-        if (resultModal) resultModal.classList.remove("hidden");
-
-        updateKeyboardHighlight();
-
-        // 履歴の保存＆更新
-        saveScoreToHistory(finalWpm, finalAccuracy);
+        const wordsTyped = totalTypedCount / 5;
+        const minutes = timeSeconds / 60;
+        const wpm = minutes > 0 ? Math.round(wordsTyped / minutes) : 0;
+        if (wpmDisplay) wpmDisplay.textContent = wpm;
     }
+}
 
-    // --- イベントリスナー登録 ---
-    if (typingContainer) typingContainer.addEventListener("click", focusInput);
-    if (restartBtn) restartBtn.addEventListener("click", loadText);
-    if (modalRestartBtn) modalRestartBtn.addEventListener("click", loadText);
-    if (levelSelect) levelSelect.addEventListener("change", loadText);
-    if (categorySelect) categorySelect.addEventListener("change", loadText);
+function resetStatsDisplay() {
+    if (wpmDisplay) wpmDisplay.textContent = "0";
+    if (accuracyDisplay) accuracyDisplay.textContent = "100.0%";
+    if (timeDisplay) timeDisplay.textContent = "0s";
+}
 
-    if (clearHistoryBtn) {
-        clearHistoryBtn.addEventListener("click", () => {
-            if (confirm("Clear all practice history?")) {
-                localStorage.removeItem(HISTORY_STORAGE_KEY);
-                renderHistory();
-                focusInput();
+function focusHiddenInput() {
+    if (hiddenInput && settingsModal.classList.contains("hidden")) {
+        hiddenInput.focus();
+    }
+}
+
+// 打鍵入力ハンドリング
+if (hiddenInput) {
+    hiddenInput.addEventListener("keydown", async (e) => {
+        if (isCompleted || currentIndex >= targetText.length) return;
+        if (!settingsModal.classList.contains("hidden")) return; // モーダル表示中は打鍵無効
+
+        if (["Shift", "Control", "Alt", "Meta", "Tab", "CapsLock"].includes(e.key)) {
+            return;
+        }
+
+        e.preventDefault();
+
+        if (!startTime) {
+            startTime = new Date();
+            timerInterval = setInterval(updateStats, 500);
+        }
+
+        let typedChar = e.key;
+        if (e.key === "Enter") {
+            typedChar = "\n";
+        }
+
+        const expectedChar = targetText[currentIndex];
+        const mode = modeSelect ? modeSelect.value : "strict";
+
+        totalTypedCount++;
+
+        if (typedChar === expectedChar) {
+            typedHistory.push({ char: typedChar, isCorrect: true });
+            currentIndex++;
+            playKeySound("correct");
+        } else {
+            errorsCount++;
+            playKeySound("error");
+
+            if (mode === "strict") {
+                renderText();
+                updateStats();
+                return;
+            } else {
+                typedHistory.push({ char: typedChar, isCorrect: false });
+                currentIndex++;
             }
-        });
+        }
+
+        renderText();
+        updateKeyboardHighlight();
+        updateStats();
+
+        if (currentIndex >= targetText.length) {
+            completeLesson();
+        }
+    });
+}
+
+function completeLesson() {
+    isCompleted = true;
+    if (timerInterval) clearInterval(timerInterval);
+
+    playKeySound("complete");
+
+    const endTime = new Date();
+    const timeSeconds = (endTime - startTime) / 1000;
+    const accuracy = Math.max(0, ((totalTypedCount - errorsCount) / totalTypedCount) * 100);
+    const wpm = timeSeconds > 0 ? Math.round((totalTypedCount / 5) / (timeSeconds / 60)) : 0;
+
+    if (finalWpm) finalWpm.textContent = wpm;
+    if (finalAccuracy) finalAccuracy.textContent = `${accuracy.toFixed(1)}%`;
+    if (finalTime) finalTime.textContent = `${Math.floor(timeSeconds)}s`;
+
+    saveHistory({
+        date: new Date().toLocaleDateString(),
+        level: categorySelect.value === "alice" ? `Alice Ch.${chapterSelect.value}` : `Level ${levelSelect.value}`,
+        wpm: wpm,
+        accuracy: `${accuracy.toFixed(1)}%`
+    });
+
+    renderHistory();
+    if (resultModal) resultModal.classList.remove("hidden");
+}
+
+function getHistory() {
+    const history = localStorage.getItem("typing_history");
+    return history ? JSON.parse(history) : [];
+}
+
+function saveHistory(item) {
+    const history = getHistory();
+    history.unshift(item);
+    localStorage.setItem("typing_history", JSON.stringify(history.slice(0, 10)));
+}
+
+function renderHistory() {
+    if (!historyTableBody) return;
+    const history = getHistory();
+
+    if (history.length === 0) {
+        historyTableBody.innerHTML = '<tr><td colspan="4" class="no-data">No practice history yet.</td></tr>';
+        return;
     }
 
-    // 初期化実行
+    historyTableBody.innerHTML = history.map(item => `
+        <tr>
+            <td>${item.date}</td>
+            <td>${item.level}</td>
+            <td>${item.wpm}</td>
+            <td>${item.accuracy}</td>
+        </tr>
+    `).join("");
+}
+
+// イベント設定
+document.addEventListener("DOMContentLoaded", async () => {
+    updateControlState();
+    if (categorySelect) {
+        await updateChapterOptions(categorySelect.value);
+    }
     renderHistory();
-    loadText();
 });
 
-// --- 効果音（Web Audio API）制御 ---
-    let audioCtx = null;
-    let isSoundEnabled = true;
+if (categorySelect) {
+    categorySelect.addEventListener("change", async () => {
+        updateControlState();
+        await updateChapterOptions(categorySelect.value);
+    });
+}
 
-    // AudioContext の初期化（ユーザー操作をトリガーにして生成）
-    function initAudio() {
-        if (!audioCtx) {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            audioCtx = new AudioContext();
-        }
-        if (audioCtx.state === "suspended") {
-            audioCtx.resume();
-        }
-    }
+if (openSettingsBtn) {
+    openSettingsBtn.addEventListener("click", () => {
+        if (settingsModal) settingsModal.classList.remove("hidden");
+    });
+}
 
-    // 正解時のタイピング音（タイプライター / レトロクリック音）
-    function playTypeSound() {
-        if (!isSoundEnabled) return;
-        initAudio();
+if (startLessonBtn) {
+    startLessonBtn.addEventListener("click", async () => {
+        if (settingsModal) settingsModal.classList.add("hidden");
+        await loadText();
+    });
+}
 
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
+if (restartBtn) {
+    restartBtn.addEventListener("click", () => {
+        loadText();
+    });
+}
 
-        // 短いビープ音（アタック感のある短い音）
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.03);
+if (modalRestartBtn) {
+    modalRestartBtn.addEventListener("click", () => {
+        if (resultModal) resultModal.classList.add("hidden");
+        if (settingsModal) settingsModal.classList.remove("hidden");
+    });
+}
 
-        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
+if (clearHistoryBtn) {
+    clearHistoryBtn.addEventListener("click", () => {
+        localStorage.removeItem("typing_history");
+        renderHistory();
+    });
+}
 
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
+if (soundToggle) {
+    soundToggle.addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+        soundToggle.textContent = soundEnabled ? "🔊 ON" : "🔇 OFF";
+        focusHiddenInput();
+    });
+}
 
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.03);
-    }
-
-    // ミス時の警告音（低音エラーピープ）
-    function playErrorSound() {
-        if (!isSoundEnabled) return;
-        initAudio();
-
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        // 低い鋸歯状波（エラー感のある低いブザー音）
-        osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-        osc.frequency.setValueAtTime(120, audioCtx.currentTime + 0.08);
-
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.12);
-    }
-
-    // サウンドON/OFFトグルボタンのイベントハンドラ
-    const soundToggle = document.getElementById("soundToggle");
-    if (soundToggle) {
-        soundToggle.addEventListener("click", () => {
-            isSoundEnabled = !isSoundEnabled;
-            soundToggle.innerText = isSoundEnabled ? "🔊 ON" : "🔇 OFF";
-            focusInput();
-        });
-    }
-
-    // --- キー入力制御のレスポンス処理部分に音再生を追加 ---
-    // (打鍵判定レスポンスの if (response.ok) 内に以下を追加)
-    /*
-        if (result.is_correct) {
-            playTypeSound();
+if (themeSelect) {
+    themeSelect.addEventListener("change", () => {
+        if (themeSelect.value === "system7") {
+            document.documentElement.setAttribute("data-theme", "system7");
+            document.body.setAttribute("data-theme", "system7");
         } else {
-            playErrorSound();
+            document.documentElement.removeAttribute("data-theme");
+            document.body.removeAttribute("data-theme");
         }
-    */
+        focusHiddenInput();
+    });
+}
+
+if (typingContainer) {
+    typingContainer.addEventListener("click", focusHiddenInput);
+}
