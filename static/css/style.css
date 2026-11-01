@@ -423,6 +423,20 @@ select {
     padding: 1rem !important;
 }
 
+/* 改行マーク（↵）のスタイル設定 */
+.char-newline {
+    font-weight: bold;
+    opacity: 0.7;
+    margin-right: 2px;
+}
+
+/* 現在打つべき文字が改行の場合にカーソル色を目立たせる */
+.current .char-newline {
+    color: #ff0055; /* 現在打つべき改行マークをピンク/赤系で強調 */
+    background-color: rgba(255, 0, 85, 0.2);
+    border-radius: 2px;
+}
+
 /* System 7 テーマ適応 */
 [data-theme="system7"] .history-container {
     background-color: #ffffff;
@@ -443,4 +457,38 @@ select {
     background-color: #ffffff;
     color: #000000;
     border: 1px solid #000000;
+}
+
+#textDisplay {
+    white-space: pre-wrap; /* コードの改行やインデント（連続スペース）を崩さず維持 */
+        word-break: break-all;
+        line-height: 1.8;
+        padding: 15px;
+        /* フォント指定を外し、既存のテーマ（System 7 / Modern）のフォントを継承 */
+}
+
+/* 入力済み（正解） */
+#textDisplay span.correct {
+    color: #4ec9b0;
+    font-weight: bold;
+}
+
+/* 入力済み（ミス） */
+#textDisplay span.incorrect {
+    color: #f44747;
+    background-color: rgba(244, 71, 71, 0.2);
+}
+
+/* ★ 現在入力中の文字（薄黄色ハイライト） ★ */
+#textDisplay span.current {
+    background-color: #ffff99 !important; /* 薄黄色 */
+    color: #000000 !important;             /* 文字色は黒 */
+    border-radius: 2px;
+    font-weight: bold;
+}
+
+/* 改行マーク（↵）のスタイル */
+#textDisplay .char-newline {
+    opacity: 0.6;
+    font-size: 0.9em;
 }

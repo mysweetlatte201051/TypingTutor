@@ -44,6 +44,48 @@ document.addEventListener("DOMContentLoaded", () => {
     let isCompleted = false;
     let typedHistory = [];
 
+    function escapeHtml(char) {
+        if (char === "&") return "&amp;";
+        if (char === "<") return "&lt;";
+        if (char === ">") return "&gt;";
+        if (char === '"') return "&quot;";
+        if (char === "'") return "&#039;";
+        return char;
+    }
+
+    // 2. 確定版テキスト描画関数
+    function renderText() {
+        const textDisplay = document.getElementById("textDisplay");
+        if (!textDisplay || !targetText) return;
+
+        let html = "";
+
+        for (let i = 0; i < targetText.length; i++) {
+            const char = targetText[i];
+
+            // 状態に応じたクラス（correct / incorrect / current / pending）
+            let className = "pending";
+            if (i < currentIndex) {
+                className = typedHistory[i] ? "correct" : "incorrect";
+            } else if (i === currentIndex) {
+                className = "current"; // 現在入力中の文字
+            }
+
+            if (char === "\n") {
+                // 改行マーク（↵）にクラスを適用し、<br> は span の外に出す
+                html += `<span class="${className} char-newline">↵</span><br>`;
+            } else if (char === " ") {
+                // スペース
+                html += `<span class="${className} char-space">&nbsp;</span>`;
+            } else {
+                // 通常の文字
+                html += `<span class="${className}">${escapeHtml(char)}</span>`;
+            }
+        }
+
+        textDisplay.innerHTML = html;
+    }
+
     // --- フォーカス制御関数 ---
     function focusInput() {
         if (hiddenInput) {
@@ -165,24 +207,6 @@ document.addEventListener("DOMContentLoaded", () => {
         focusInput();
     }
 
-    // --- テキスト描画描画更新 ---
-    function renderText() {
-        let html = "";
-        for (let i = 0; i < targetText.length; i++) {
-            const char = targetText[i] === " " ? "&nbsp;" : targetText[i];
-
-            if (i < currentIndex) {
-                const statusClass = typedHistory[i] ? "char-correct" : "char-incorrect";
-                html += `<span class="${statusClass}">${char}</span>`;
-            } else if (i === currentIndex) {
-                html += `<span class="char-current">${char}</span>`;
-            } else {
-                html += `<span class="char-untyped">${char}</span>`;
-            }
-        }
-        textDisplay.innerHTML = html;
-    }
-
     // --- オンスクリーンキーボードのハイライト＆指ガイド更新 ---
     function updateKeyboardHighlight() {
         document.querySelectorAll(".key.next-key").forEach(el => {
@@ -215,8 +239,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- キー入力制御 ---
-    hiddenInput.addEventListener("keydown", async (e) => {
+
+     hiddenInput.addEventListener("keydown", async (e) => {
         // レッスン完了時に Enter キーで Next Lesson を開始
         if (isCompleted && e.key === "Enter") {
             e.preventDefault();
@@ -226,8 +250,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (isCompleted || !targetText) return;
 
-        // 特殊キー（Shift, Control等）は無視
-        if (e.key.length !== 1) return;
+        // 1. Enterキーと1文字以外の特殊キー（Shift, Control, Alt等）は無視
+        if (e.key.length !== 1 && e.key !== "Enter") return;
+
+        // 2. ブラウザのデフォルト動作（Enterによるページスクロール等）を防止
+        if (e.key === "Enter") {
+            e.preventDefault();
+        }
 
         // タイマースタート
         if (!startTime) {
@@ -235,7 +264,8 @@ document.addEventListener("DOMContentLoaded", () => {
             timerInterval = setInterval(updateStats, 200);
         }
 
-        const typedChar = e.key;
+        // 3. Enter キーの場合は API へ改行文字 "\n" として渡す
+        const typedChar = (e.key === "Enter") ? "\n" : e.key;
         const mode = modeSelect.value;
 
         // 打鍵判定 API (POST /api/evaluate)
@@ -256,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 totalTyped++;
 
-                // ★ ここに効果音再生の分岐を追加 ★
+                // 効果音再生
                 if (!result.is_correct) {
                     errors++;
                     playErrorSound(); // ミス時の警告音
