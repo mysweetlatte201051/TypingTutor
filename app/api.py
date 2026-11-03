@@ -51,32 +51,32 @@ def get_chapters():
 
 @app.route("/api/text", methods=["GET"])
 def get_text():
-    """課題テキスト取得 API（カテゴリ・チャプター/レベル対応）"""
+    """課題テキスト取得 API（段落リストを全件配列で返却）"""
     category = request.args.get("category", "default")
     chapter = request.args.get("chapter") or request.args.get("level", "1")
 
     texts_data = load_texts()
     category_data = texts_data.get(category, {})
 
-    # 指定カテゴリにデータがない場合のフォールバック（defaultへ落とす）
     if not category_data and category != "default":
         category_data = texts_data.get("default", {})
 
     chapter_paragraphs = category_data.get(str(chapter), [])
 
-    # チャプター内に段落が存在しない場合、カテゴリの最初のキーを取得
-    if not chapter_paragraphs and category_data:
-        first_key = next(iter(category_data.keys()), "1")
-        chapter_paragraphs = category_data.get(first_key, [])
+    # 文字列単体で保持されている場合の配慮
+    if isinstance(chapter_paragraphs, str):
+        chapter_paragraphs = [chapter_paragraphs]
 
-    selected_text = (
-        chapter_paragraphs[0]
-        if chapter_paragraphs
-        else "The quick brown fox jumps over the lazy dog."
-    )
+    if not chapter_paragraphs:
+        chapter_paragraphs = ["The quick brown fox jumps over the lazy dog."]
 
     return jsonify(
-        {"text": selected_text, "category": category, "chapter": str(chapter)}
+        {
+            "paragraphs": chapter_paragraphs,
+            "total_parts": len(chapter_paragraphs),
+            "category": category,
+            "chapter": str(chapter),
+        }
     ), 200
 
 

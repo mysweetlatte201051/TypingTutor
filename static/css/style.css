@@ -148,6 +148,33 @@ header h1 {
     pointer-events: none;
 }
 
+/* パート切替タブ */
+.part-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 0.8rem;
+    max-height: 80px;
+    overflow-y: auto;
+}
+
+.tab-btn {
+    background-color: #45475a;
+    color: #cdd6f4;
+    border: none;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background-color: #89b4fa;
+    color: #11111b;
+    font-weight: bold;
+}
+
 /* モーダル */
 .modal {
     position: fixed;
@@ -224,6 +251,18 @@ select:disabled {
 [data-theme="system7"] h2 {
     color: #000000 !important;
     font-family: 'Geneva', 'Chicago', monospace;
+}
+
+[data-theme="system7"] .tab-btn {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    border-radius: 0;
+}
+
+[data-theme="system7"] .tab-btn.active {
+    background-color: #000000;
+    color: #ffffff;
 }
 
 [data-theme="system7"] .stats-board,

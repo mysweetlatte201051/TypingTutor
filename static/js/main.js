@@ -32,7 +32,12 @@ const finalTime = document.getElementById("finalTime");
 const modalRestartBtn = document.getElementById("modalRestartBtn");
 const typingContainer = document.getElementById("typingContainer");
 
+// ★ パート切替タブ要素 ★
+const partTabs = document.getElementById("partTabs");
+
 // アプリケーション状態変数
+let currentParagraphs = []; // 章内の全パート配列
+let currentPartIndex = 0;   // 現在選択中のパートインデックス (0〜)
 let targetText = "";
 let currentIndex = 0;
 let typedHistory = [];
@@ -86,7 +91,6 @@ function playKeySound(type) {
     }
 }
 
-// Control UI Status
 function updateControlState() {
     if (!categorySelect || !chapterSelect || !levelSelect) return;
     const category = categorySelect.value;
@@ -142,6 +146,9 @@ function escapeHtml(str) {
         .replace(/'/g, "&#039;");
 }
 
+/**
+ * 章の全テキストデータを取得し、パート切替タブを生成
+ */
 async function loadText() {
     if (!categorySelect) return;
 
@@ -157,29 +164,82 @@ async function loadText() {
 
         const data = await response.json();
 
-        // クォートおよびダッシュ（— –）を標準入力可能な記号に自動変換・標準化
-        targetText = (data.text || "The quick brown fox jumps over the lazy dog.")
-            .replace(/[“”]/g, '"')
-            .replace(/[‘’]/g, "'")
-            .replace(/[—–]/g, "-");
+        // 取得した文章リストを保持
+        currentParagraphs = data.paragraphs || ["The quick brown fox jumps over the lazy dog."];
+        currentPartIndex = 0;
 
-        currentIndex = 0;
-        typedHistory = [];
-        errorsCount = 0;
-        totalTypedCount = 0;
-        isCompleted = false;
-        startTime = null;
-
-        if (timerInterval) clearInterval(timerInterval);
-        resetStatsDisplay();
-
-        renderText();
-        updateKeyboardHighlight();
-        focusHiddenInput();
+        // タブUIのレンダリング
+        renderPartTabs();
+        // 最初のパートをセット
+        selectPart(0);
     } catch (error) {
         console.error("Text load error:", error);
         if (textDisplay) textDisplay.textContent = "Failed to load lesson text.";
     }
+}
+
+/**
+ * パート切替タブのレンダリング
+ */
+function renderPartTabs() {
+    if (!partTabs) return;
+    partTabs.innerHTML = "";
+
+    if (currentParagraphs.length <= 1) {
+        return; // パートが1つの場合はタブ非表示
+    }
+
+    currentParagraphs.forEach((_, idx) => {
+        const btn = document.createElement("button");
+        btn.className = `tab-btn ${idx === currentPartIndex ? "active" : ""}`;
+        btn.textContent = `Part ${idx + 1}`;
+        btn.addEventListener("click", () => {
+            selectPart(idx);
+        });
+        partTabs.appendChild(btn);
+    });
+}
+
+/**
+ * 指定パートのテキストをタイピング対象にセット
+ */
+function selectPart(index) {
+    if (index < 0 || index >= currentParagraphs.length) return;
+
+    currentPartIndex = index;
+
+    // タブの active クラス更新
+    if (partTabs) {
+        const buttons = partTabs.querySelectorAll(".tab-btn");
+        buttons.forEach((btn, idx) => {
+            if (idx === currentPartIndex) {
+                btn.classList.add("active");
+            } else {
+                btn.classList.remove("active");
+            }
+        });
+    }
+
+    // 原文記号の標準化
+    const rawText = currentParagraphs[currentPartIndex] || "";
+    targetText = rawText
+        .replace(/[“”]/g, '"')
+        .replace(/[‘’]/g, "'")
+        .replace(/[—–]/g, "-");
+
+    currentIndex = 0;
+    typedHistory = [];
+    errorsCount = 0;
+    totalTypedCount = 0;
+    isCompleted = false;
+    startTime = null;
+
+    if (timerInterval) clearInterval(timerInterval);
+    resetStatsDisplay();
+
+    renderText();
+    updateKeyboardHighlight();
+    focusHiddenInput();
 }
 
 function renderText() {
@@ -207,7 +267,6 @@ function renderText() {
 
     textDisplay.innerHTML = html;
 
-    // 現在の入力位置へスクロール追従
     const currentEl = textDisplay.querySelector(".char-current");
     if (currentEl && typingContainer) {
         currentEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -284,7 +343,7 @@ function focusHiddenInput() {
 if (hiddenInput) {
     hiddenInput.addEventListener("keydown", async (e) => {
         if (isCompleted || currentIndex >= targetText.length) return;
-        if (!settingsModal.classList.contains("hidden")) return; // モーダル表示中は打鍵無効
+        if (!settingsModal.classList.contains("hidden")) return;
 
         if (["Shift", "Control", "Alt", "Meta", "Tab", "CapsLock"].includes(e.key)) {
             return;
@@ -330,35 +389,46 @@ if (hiddenInput) {
         updateStats();
 
         if (currentIndex >= targetText.length) {
-            completeLesson();
+            completePart();
         }
     });
 }
 
-function completeLesson() {
+/**
+ * 1つのパート完了時の処理
+ */
+function completePart() {
     isCompleted = true;
     if (timerInterval) clearInterval(timerInterval);
 
     playKeySound("complete");
 
-    const endTime = new Date();
-    const timeSeconds = (endTime - startTime) / 1000;
-    const accuracy = Math.max(0, ((totalTypedCount - errorsCount) / totalTypedCount) * 100);
-    const wpm = timeSeconds > 0 ? Math.round((totalTypedCount / 5) / (timeSeconds / 60)) : 0;
+    // 次のパートが存在する場合は 1秒後に自動進行
+    if (currentPartIndex + 1 < currentParagraphs.length) {
+        setTimeout(() => {
+            selectPart(currentPartIndex + 1);
+        }, 1000);
+    } else {
+        // 章全体のパートがすべて完了した場合に結果モーダルを表示
+        const endTime = new Date();
+        const timeSeconds = (endTime - startTime) / 1000;
+        const accuracy = Math.max(0, ((totalTypedCount - errorsCount) / totalTypedCount) * 100);
+        const wpm = timeSeconds > 0 ? Math.round((totalTypedCount / 5) / (timeSeconds / 60)) : 0;
 
-    if (finalWpm) finalWpm.textContent = wpm;
-    if (finalAccuracy) finalAccuracy.textContent = `${accuracy.toFixed(1)}%`;
-    if (finalTime) finalTime.textContent = `${Math.floor(timeSeconds)}s`;
+        if (finalWpm) finalWpm.textContent = wpm;
+        if (finalAccuracy) finalAccuracy.textContent = `${accuracy.toFixed(1)}%`;
+        if (finalTime) finalTime.textContent = `${Math.floor(timeSeconds)}s`;
 
-    saveHistory({
-        date: new Date().toLocaleDateString(),
-        level: categorySelect.value === "alice" ? `Alice Ch.${chapterSelect.value}` : `Level ${levelSelect.value}`,
-        wpm: wpm,
-        accuracy: `${accuracy.toFixed(1)}%`
-    });
+        saveHistory({
+            date: new Date().toLocaleDateString(),
+            level: categorySelect.value === "alice" ? `Alice Ch.${chapterSelect.value}` : `Level ${levelSelect.value}`,
+            wpm: wpm,
+            accuracy: `${accuracy.toFixed(1)}%`
+        });
 
-    renderHistory();
-    if (resultModal) resultModal.classList.remove("hidden");
+        renderHistory();
+        if (resultModal) resultModal.classList.remove("hidden");
+    }
 }
 
 function getHistory() {
