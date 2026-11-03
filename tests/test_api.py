@@ -18,8 +18,9 @@ class TestApiEndpoints:
         response = client.get("/api/text?level=3&category=default")
         assert response.status_code == 200
         data = response.get_json()
-        assert "text" in data
-        assert isinstance(data["text"], str)
+        assert "paragraphs" in data
+        assert "total_parts" in data
+        assert isinstance(data["paragraphs"], list)
 
     def test_evaluate_endpoint(self, client):
         """POST /api/evaluate: 打鍵判定 API の正常系テスト"""
